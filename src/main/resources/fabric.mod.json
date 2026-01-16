@@ -1,0 +1,42 @@
+{
+	"schemaVersion": 1,
+	"id": "wrg_vanilla",
+	"version": "${version}",
+	"name": "wrg_vanilla",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"authors": [
+		"Me!"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/wrg_vanilla/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"vanilla.wildsregrown.WRGVanilla"
+		],
+		"client": [
+			"vanilla.wildsregrown.WRGVanillaClient"
+		],
+		"fabric-datagen": [
+			"vanilla.wildsregrown.WRGVanillaDataGenerator"
+		]
+	},
+	"mixins": [
+		"wrg_vanilla.mixins.json",
+		{
+			"config": "wrg_vanilla.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.18.4",
+		"minecraft": "~1.21.11",
+		"java": ">=21",
+		"fabric-api": "*",
+		"wrg_api":">=0.4.0"
+	}
+}
