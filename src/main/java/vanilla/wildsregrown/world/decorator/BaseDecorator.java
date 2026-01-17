@@ -60,15 +60,13 @@ public class BaseDecorator implements Decorator {
                 for (int i = 0; i < strata.size(); i++) {
                     Stratum stratum = strata.get(i);
 
-                    String key = GeoRegistry.get(stratum.getKey()).name;
-                    Block block = Registries.BLOCK.get(Identifier.of(modid, key));
-                    boolean air = Objects.equals(key, "air");
-                    if (air){
+                    Block block = Blocks.STONE;
+                    if (GeoRegistry.air.getKey() == stratum.getKey()){
                         block = Blocks.AIR;
-                    }else if(!Registries.BLOCK.containsId(Identifier.of(modid, key))){
-                        LOGGER.info("Missing entry: " + key);
                     }
-
+                    if (GeoRegistry.isSoil(stratum.getKey())){
+                        block = Blocks.GRASS_BLOCK;
+                    }
                     for (int k = stratum.getFloor(); k < stratum.getCeil(); k++) {
                         blockPos.setY(k);
                         setBlock(chunk, blockPos, block);

@@ -3,7 +3,8 @@
 	"package": "vanilla.wildsregrown.mixin.client",
 	"compatibilityLevel": "JAVA_21",
 	"client": [
-		"ExampleClientMixin"
+		"TitleScreenMixin",
+		"BackupBypass"
 	],
 	"injectors": {
 		"defaultRequire": 1

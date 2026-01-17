@@ -2,8 +2,8 @@ package vanilla.wildsregrown.world;
 
 import com.sipke.api.PosTranslator;
 import com.sipke.builder.GridCtx;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtIo;
+import net.minecraft.nbt.*;
+import net.minecraft.nbt.visitor.NbtElementVisitor;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -28,10 +28,10 @@ public abstract class LevelWriter {
                     NbtCompound overworld = new NbtCompound();
                     NbtCompound gen = new NbtCompound();
                     NbtCompound biome = new NbtCompound();
-                    overworld.putString("type", "wildsregrown:wrg_dimension");
-                    gen.putString("type", "wildsregrown:wrg_chunk");
-                    biome.putString("type", "wildsregrown:wrg_biome");
-                    biome.putString("biome", "wildsregrown:empty");
+                    overworld.putString("type", "wrg_vanilla:wrg_dimension");
+                    gen.putString("type", "wrg_vanilla:wrg_chunk");
+                    biome.putString("type", "wrg_vanilla:wrg_biome");
+                    biome.putString("biome", "minecraft:savanna");
                     gen.put("biome_source", biome);
                     gen.putString("settings", "minecraft:overworld");
                     overworld.put("generator", gen);
@@ -39,7 +39,7 @@ public abstract class LevelWriter {
 
                     NbtCompound world = new NbtCompound();
                     world.putLong("seed", ctx.seed);
-                    world.putByte("generate_features", (byte) 0);
+                    world.putByte("generate_features", (byte) 1);
                     world.put("dimensions", dim);
 
                     NbtCompound data = new NbtCompound();

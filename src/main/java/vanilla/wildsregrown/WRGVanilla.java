@@ -30,6 +30,6 @@ public class WRGVanilla implements ModInitializer {
 		Registry.register(Registries.BIOME_SOURCE, Identifier.of(modid, "wrg_biome"), WRGBiomeProvider.CODEC);
 		Registry.register(Registries.CHUNK_GENERATOR, Identifier.of(modid, "wrg_chunk"), WRGChunkGenerator.CODEC);
 
-
 	}
+
 }

@@ -8,3 +8,6 @@ pluginManagement {
 		gradlePluginPortal()
 	}
 }
+include ':noiselib', ':worldengine'
+project(':noiselib').projectDir = new File('../noiselib')
+project(':worldengine').projectDir = new File('../worldengine')

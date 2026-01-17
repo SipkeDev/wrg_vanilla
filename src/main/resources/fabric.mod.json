@@ -3,6 +3,7 @@
 	"id": "wrg_vanilla",
 	"version": "${version}",
 	"name": "wrg_vanilla",
+	"accessWidener" : "wrg_vanilla.accesswidener",
 	"description": "This is an example description! Tell everyone what your mod is about!",
 	"authors": [
 		"Me!"
@@ -36,7 +37,6 @@
 		"fabricloader": ">=0.18.4",
 		"minecraft": "~1.21.11",
 		"java": ">=21",
-		"fabric-api": "*",
-		"wrg_api":">=0.4.0"
+		"fabric-api": "*"
 	}
 }
