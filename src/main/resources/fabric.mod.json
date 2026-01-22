@@ -16,6 +16,9 @@
 	"icon": "assets/wrg_vanilla/icon.png",
 	"environment": "*",
 	"entrypoints": {
+		"preLaunch": [
+			"vanilla.wildsregrown.PreWRGVanilla"
+		],
 		"main": [
 			"vanilla.wildsregrown.WRGVanilla"
 		],

@@ -15,8 +15,7 @@ import com.sipke.api.terrain.Landform;
 import com.sipke.generator.heightmap.task.height.TileCell;
 import com.sipke.math.Distance;
 import com.sipke.math.MathUtil;
-import com.sipke.registeries.Ecosystems;
-import com.sipke.registeries.Landforms;
+import com.sipke.registeries.WorldRegistries;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Drawable;
@@ -56,7 +55,7 @@ public class GridCamera extends Camera<WorldGrid> implements Drawable, IRenderTy
 
                     case region -> {
                         TileCell tileCell = getPos(grid.getEcosystems(), dx, dy);
-                        Ecosystem ecosystem = Ecosystems.get(tileCell.getCell().getConfig());
+                        Ecosystem ecosystem = WorldRegistries.ECOSYSTEMS.get(tileCell.getCell().getConfig());
                         setPixel(x, y, ecosystem.getClimate().getRgb());
                     }
                     case height -> {
@@ -82,7 +81,7 @@ public class GridCamera extends Camera<WorldGrid> implements Drawable, IRenderTy
                     }
                     case landform -> {
                         TileCell tileCell = getPos(grid.getLandforms(), dx, dy);
-                        Landform landform = Landforms.get(tileCell.getCell().getConfig());
+                        Landform landform = WorldRegistries.LANDFORMS.get(tileCell.getCell().getConfig());
                         setPixel(x, y, landform.elevation.rgb);
                     }
                     case landform_edge -> {

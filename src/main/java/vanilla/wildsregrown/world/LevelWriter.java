@@ -31,7 +31,7 @@ public abstract class LevelWriter {
                     overworld.putString("type", "wrg_vanilla:wrg_dimension");
                     gen.putString("type", "wrg_vanilla:wrg_chunk");
                     biome.putString("type", "wrg_vanilla:wrg_biome");
-                    biome.putString("biome", "minecraft:savanna");
+                    biome.putString("preset", "minecraft:overworld");
                     gen.put("biome_source", biome);
                     gen.putString("settings", "minecraft:overworld");
                     overworld.put("generator", gen);

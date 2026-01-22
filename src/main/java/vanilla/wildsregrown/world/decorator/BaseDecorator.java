@@ -1,24 +1,22 @@
 package vanilla.wildsregrown.world.decorator;
 
 import com.sipke.api.chunk.Chunk;
+import com.sipke.api.geology.GeoMaterial;
 import com.sipke.api.geology.Stratum;
 import com.sipke.generator.WorldGenerator;
 import com.sipke.math.MathUtil;
-import com.sipke.registeries.GeoRegistry;
+import com.sipke.registeries.WorldRegistries;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import vanilla.wildsregrown.api.materials.IdentifierMaterial;
+import vanilla.wildsregrown.api.materials.VanillaMaterial;
 import vanilla.wildsregrown.world.WRGChunkGenerator;
 
 import java.util.LinkedList;
-import java.util.Objects;
-
-import static com.mojang.text2speech.Narrator.LOGGER;
 import static com.sipke.WorldConstants.chunkSize;
-import static vanilla.wildsregrown.WRGVanilla.modid;
 
 public class BaseDecorator implements Decorator {
 
@@ -59,16 +57,27 @@ public class BaseDecorator implements Decorator {
                 LinkedList<Stratum> strata = noiseChunk.getColumn(idx).getStrata();
                 for (int i = 0; i < strata.size(); i++) {
                     Stratum stratum = strata.get(i);
+                    GeoMaterial material = WorldRegistries.MATERIALS.get(stratum.geoKey);
 
                     Block block = Blocks.STONE;
-                    if (GeoRegistry.air.getKey() == stratum.getKey()){
+                    if (material instanceof VanillaMaterial id){
+                        block = Registries.BLOCK.get(id.getIdentifier());
+                        //WRGVanilla.LOGGER.info(id.getIdentifier().getPath() + " / " + block);
+                    } else if (material instanceof IdentifierMaterial id) {
+                        block = Registries.BLOCK.get(id.getIdentifier());
+                    }
+                    if (WorldRegistries.MATERIALS.isAir(stratum)){
                         block = Blocks.AIR;
                     }
-                    if (GeoRegistry.isSoil(stratum.getKey())){
-                        block = Blocks.GRASS_BLOCK;
-                    }
+
                     for (int k = stratum.getFloor(); k < stratum.getCeil(); k++) {
                         blockPos.setY(k);
+                        setBlock(chunk, blockPos, block);
+                    }
+
+                    if (block == Blocks.DIRT && noiseChunk.getColumn(idx).isOvergrown()){
+                        block = Blocks.GRASS_BLOCK;
+                        blockPos.setY(y-1);
                         setBlock(chunk, blockPos, block);
                     }
 

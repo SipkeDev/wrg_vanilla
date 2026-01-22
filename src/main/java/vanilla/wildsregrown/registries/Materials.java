@@ -1,0 +1,37 @@
+package vanilla.wildsregrown.registries;
+
+import com.sipke.api.geology.GeoMaterial;
+import com.sipke.registeries.WorldRegistries;
+import com.sipke.registeries.core.RegistryObject;
+import net.minecraft.block.Blocks;
+import vanilla.wildsregrown.api.materials.VanillaMaterial;
+
+public class Materials {
+
+    //Soils
+    public static final RegistryObject<GeoMaterial> sand = WorldRegistries.MATERIALS.register(new VanillaMaterial(Blocks.SAND.getTranslationKey(), 0.5f, 0.5f, 5,c(),c(),c()));
+    public static final RegistryObject<GeoMaterial> red_sand = WorldRegistries.MATERIALS.register(new VanillaMaterial(Blocks.RED_SAND.getTranslationKey(),0.5f, 0.5f, 5,c(),c(),c()));
+    public static final RegistryObject<GeoMaterial> dirt = WorldRegistries.MATERIALS.register(new VanillaMaterial(Blocks.DIRT.getTranslationKey(),  0.5f, 0.5f, 5,c(),c(),c()));
+    public static final RegistryObject<GeoMaterial> coarse_dirt = WorldRegistries.MATERIALS.register(new VanillaMaterial(Blocks.COARSE_DIRT.getTranslationKey(), 0.5f, 0.5f, 5,c(),c(),c()));
+    public static final RegistryObject<GeoMaterial> podzol = WorldRegistries.MATERIALS.register(new VanillaMaterial(Blocks.PODZOL.getTranslationKey(), 0.5f, 0.5f, 5,c(),c(),c()));
+
+    //Gravels
+    public static final RegistryObject<GeoMaterial> gravel = WorldRegistries.MATERIALS.register(new VanillaMaterial(Blocks.GRAVEL.getTranslationKey(), 0.5f, 0.5f, 5, dirt.getKey(), c(), c()));
+
+    //Rocks
+    public static final RegistryObject<GeoMaterial> cobble_stone = WorldRegistries.MATERIALS.register(new VanillaMaterial(Blocks.COBBLESTONE.getTranslationKey(), 0.5f, 0.5f, 5, dirt.getKey(), gravel.getKey(), c()));
+    public static final RegistryObject<GeoMaterial> stone = WorldRegistries.MATERIALS.register(new VanillaMaterial(Blocks.STONE.getTranslationKey(),0.5f, 0.5f, 5, dirt.getKey(), gravel.getKey(), cobble_stone.getKey()));
+
+    public static final RegistryObject<GeoMaterial> red_sandstone = WorldRegistries.MATERIALS.register(new VanillaMaterial(Blocks.RED_SANDSTONE.getTranslationKey(),0.5f, 0.5f, 5, red_sand.getKey(), red_sand.getKey(), red_sand.getKey()));
+    public static final RegistryObject<GeoMaterial> sandstone = WorldRegistries.MATERIALS.register(new VanillaMaterial(Blocks.SANDSTONE.getTranslationKey(), 0.5f, 0.5f, 5,sand.getKey(),sand.getKey(), sand.getKey()));
+
+    public static final RegistryObject<GeoMaterial> cobble_deepslate = WorldRegistries.MATERIALS.register(new VanillaMaterial(Blocks.COBBLED_DEEPSLATE.getTranslationKey(),0.5f, 0.5f, 5, dirt.getKey(),c(),c()));
+    public static final RegistryObject<GeoMaterial> deepslate = WorldRegistries.MATERIALS.register(new VanillaMaterial(Blocks.DEEPSLATE.getTranslationKey(), 0.5f, 0.5f, 5, dirt.getKey(), cobble_deepslate.getKey(),c()));
+
+
+    //current idx
+    public static int c(){
+        return WorldRegistries.MATERIALS.getEntries().size();
+    }
+
+}

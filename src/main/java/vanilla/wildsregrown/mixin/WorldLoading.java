@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import vanilla.wildsregrown.WRGVanilla;
 import vanilla.wildsregrown.world.WRGChunkGenerator;
+import vanilla.wildsregrown.world.biomes.WRGBiomeProvider;
 
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -33,6 +34,9 @@ public class WorldLoading {
                 chunk.getWorld().load(server.getPath("world"));
             } else {
                 chunk.getWorld().load(session.getWorldDirectory(worldKey));
+            }
+            if (chunk.getBiomeSource() instanceof WRGBiomeProvider provider){
+                provider.setWorld(chunk.getWorld());
             }
         }
 

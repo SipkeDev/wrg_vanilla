@@ -25,7 +25,7 @@ public class PopulateBiomes {
 	@Inject(at = @At(value = "HEAD"), method = "Lnet/minecraft/world/chunk/ChunkSection;populateBiomes(Lnet/minecraft/world/biome/source/BiomeSupplier;Lnet/minecraft/world/biome/source/util/MultiNoiseUtil$MultiNoiseSampler;III)V", cancellable = true)
 	public void populateBiomes(BiomeSupplier biomeSupplier, MultiNoiseUtil.MultiNoiseSampler sampler, int x, int y, int z, CallbackInfo ci) {
 		if (sampler == null){
-			populate(biomeSupplier, x, y, z);
+			//populate(biomeSupplier, x, y, z);
 			ci.cancel();
 		}
 	}
@@ -35,9 +35,10 @@ public class PopulateBiomes {
 		PalettedContainer<RegistryEntry<Biome>> palettedContainer = this.biomeContainer.slice();
 		int i = 4;
 		for(int j = 0; j < i; ++j) {
-			for(int k = 0; k < i; ++k) {
-				for(int l = 0; l < i; ++l) {
-					palettedContainer.swap(j, k, l, biomeSupplier.getBiome(x + j, y + k, z + l, null));
+			for (int l = 0; l < i; ++l) {
+				RegistryEntry<Biome> entry = biomeSupplier.getBiome(x+j, y, z+l, null);
+				for (int k = 0; k < i; k++) {
+					palettedContainer.swapUnsafe(j, k, l, entry);
 				}
 			}
 		}

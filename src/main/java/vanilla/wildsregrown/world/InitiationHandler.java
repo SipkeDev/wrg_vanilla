@@ -6,20 +6,17 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionOptions;
-import net.minecraft.world.gen.GeneratorOptions;
 import vanilla.wildsregrown.WRGVanilla;
 import vanilla.wildsregrown.world.biomes.WRGBiomeProvider;
 
 import java.util.Map;
 
-public class LevelUtils {
+public class InitiationHandler {
 
     public static void initServer(MinecraftServer server) {
         DynamicRegistryManager.Immutable registryAccess = server.getRegistryManager();
-        Registry<DimensionOptions> levelStemRegistry = registryAccess.getOrThrow(RegistryKeys.DIMENSION);
-        GeneratorOptions generatorOptions = server.getSaveProperties().getGeneratorOptions();
-        long seed = generatorOptions.getSeed();
-        for (Map.Entry<RegistryKey<DimensionOptions>, DimensionOptions> entry : levelStemRegistry.getEntrySet()) {
+        Registry<DimensionOptions> dim = registryAccess.getOrThrow(RegistryKeys.DIMENSION);
+        for (Map.Entry<RegistryKey<DimensionOptions>, DimensionOptions> entry : dim.getEntrySet()) {
             WRGVanilla.LOGGER.info("MARK: " + entry.getKey());
             DimensionOptions dimensionOptions = entry.getValue();
             initBiomes(registryAccess, dimensionOptions, entry.getKey());

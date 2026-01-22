@@ -1,0 +1,14 @@
+package vanilla.wildsregrown.ecosystems;
+
+import com.sipke.api.categorization.Climate;
+import com.sipke.api.categorization.Placement;
+import com.sipke.api.terrain.Ecosystem;
+import vanilla.wildsregrown.registries.Biomes;
+
+public class HotDesert extends Ecosystem {
+
+    public HotDesert() {
+        super(Climate.hotDesert, Biomes.desert);
+    }
+
+}

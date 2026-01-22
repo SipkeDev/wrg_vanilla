@@ -1,39 +1,46 @@
 package vanilla.wildsregrown.world.biomes;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Sets;
+import com.mojang.datafixers.util.Either;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.Lifecycle;
 import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.sipke.World;
-import com.sipke.api.heightmap.HeightMapPos;
-import com.sipke.math.MathUtil;
-import com.sipke.registeries.WorldRegistries;
-import com.sipke.registeries.biomes.meadows.BirchMeadow;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.*;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 import vanilla.wildsregrown.WRGVanilla;
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 public class WRGBiomeProvider extends BiomeSource {
 
-    public static final MapCodec<WRGBiomeProvider> CODEC = RecordCodecBuilder.mapCodec(
-            (instance) -> instance.group(
-                    Biome.REGISTRY_CODEC.fieldOf("biome").forGetter((biomeSource) -> biomeSource.biomeArray)
-            ).apply(instance, WRGBiomeProvider::new));
-    private final RegistryEntry<Biome> biomeArray;
-    private final List<RegistryEntry<Biome>> biomes;
+    public static final MapCodec<RegistryEntry<Biome>> BIOME_CODEC;
+    public static final MapCodec<MultiNoiseUtil.Entries<RegistryEntry<Biome>>> CUSTOM_CODEC;
+    public static final MapCodec<RegistryEntry<MultiNoiseBiomeSourceParameterList>> PRESET_CODEC;
+    public static final MapCodec<WRGBiomeProvider> CODEC;
+    private final Either<MultiNoiseUtil.Entries<RegistryEntry<Biome>>, RegistryEntry<MultiNoiseBiomeSourceParameterList>> biomeEntries;
+
+    private final RegistryEntry<Biome> defaultBiome;
+    private final HashMap<Identifier, RegistryEntry<Biome>> biomes;
     private World world;
 
-    public WRGBiomeProvider(RegistryEntry<Biome> biomeArray) {
-        this.biomeArray = biomeArray;
-        this.biomes = new ArrayList<>();
+    private WRGBiomeProvider(Either<MultiNoiseUtil.Entries<RegistryEntry<Biome>>, RegistryEntry<MultiNoiseBiomeSourceParameterList>> biomeEntries) {
+        this.biomeEntries = biomeEntries;
+        this.biomes = new HashMap<>();
+        this.defaultBiome = getBiomeEntries().getEntries().get(5).getSecond();
+        WRGVanilla.LOGGER.info("big marker: " + defaultBiome.getIdAsString());
+    }
+
+    public HashMap<Identifier, RegistryEntry<Biome>> getMap() {
+        return biomes;
     }
 
     public void setWorld(World world) {
@@ -45,15 +52,26 @@ public class WRGBiomeProvider extends BiomeSource {
         return CODEC;
     }
 
-    @Override
+    private MultiNoiseUtil.Entries<RegistryEntry<Biome>> getBiomeEntries() {
+        return this.biomeEntries.map((entries) -> entries, (parameterListEntry) -> (parameterListEntry.value()).getEntries());
+    }
+
     protected Stream<RegistryEntry<Biome>> biomeStream() {
-        return biomes.stream();
+        return this.getBiomeEntries().getEntries().stream().map(Pair::getSecond);
     }
 
     @Override
     public RegistryEntry<Biome> getBiome(int x, int y, int z, MultiNoiseUtil.MultiNoiseSampler noise) {
-        //HeightMapPos pos = world.generator.getHeightMapPos(x, z);
-        return biomes.get((int)MathUtil.mudolo((1f/32)*MathUtil.abs(x), biomes.size()-1));
+        /*
+        if (world.generator.getBiome(x, z) instanceof IdentifierBiome identifierBiome) {
+                RegistryEntry<Biome> entry =  biomes.get(identifierBiome.getIdentifier());
+                if (entry!=null){
+                    return entry;
+                }
+        }
+
+         */
+        return defaultBiome;
     }
 
     @Override
@@ -62,10 +80,19 @@ public class WRGBiomeProvider extends BiomeSource {
     }
 
     public void addBiomes(ImmutableList<RegistryEntry<Biome>> build) {
-        for (RegistryEntry<Biome> entry : build){
-            this.biomes.add(entry);
-            WRGVanilla.LOGGER.info(entry.getIdAsString());
+        for (RegistryEntry<Biome> entry : build) {
+            Optional<RegistryKey<Biome>> key = entry.getKey();
+            if (key.isPresent()) {
+                this.biomes.put(key.get().getValue(), entry);
+                WRGVanilla.LOGGER.info("value :" + key.get().getValue());
+            }
         }
-        WRGVanilla.LOGGER.info("Added Biomes to source");
+    }
+
+    static {
+        BIOME_CODEC = Biome.REGISTRY_CODEC.fieldOf("biome");
+        CUSTOM_CODEC = MultiNoiseUtil.Entries.createCodec(BIOME_CODEC).fieldOf("biomes");
+        PRESET_CODEC = MultiNoiseBiomeSourceParameterList.REGISTRY_CODEC.fieldOf("preset").withLifecycle(Lifecycle.stable());
+        CODEC = Codec.mapEither(CUSTOM_CODEC, PRESET_CODEC).xmap(WRGBiomeProvider::new, (source) -> source.biomeEntries);
     }
 }
