@@ -9,6 +9,11 @@ public class VanillaBiome extends IdentifierBiome implements IdentifiableRegiste
         super("minecraft", name);
     }
 
+    public VanillaBiome(String name, boolean overgrown) {
+        super("minecraft", name);
+        setOvergrown(overgrown);
+    }
+
     @Override
     public Identifier getIdentifier(){
         return Identifier.ofVanilla(getName());

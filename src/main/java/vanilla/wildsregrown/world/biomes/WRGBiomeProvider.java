@@ -14,6 +14,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.*;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 import vanilla.wildsregrown.WRGVanilla;
+import vanilla.wildsregrown.api.IdentifiableRegistery;
 
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +36,7 @@ public class WRGBiomeProvider extends BiomeSource {
     private WRGBiomeProvider(Either<MultiNoiseUtil.Entries<RegistryEntry<Biome>>, RegistryEntry<MultiNoiseBiomeSourceParameterList>> biomeEntries) {
         this.biomeEntries = biomeEntries;
         this.biomes = new HashMap<>();
-        this.defaultBiome = getBiomeEntries().getEntries().get(5).getSecond();
+        this.defaultBiome = getBiomeEntries().getEntries().get(12).getSecond();
         WRGVanilla.LOGGER.info("big marker: " + defaultBiome.getIdAsString());
     }
 
@@ -62,15 +63,6 @@ public class WRGBiomeProvider extends BiomeSource {
 
     @Override
     public RegistryEntry<Biome> getBiome(int x, int y, int z, MultiNoiseUtil.MultiNoiseSampler noise) {
-        /*
-        if (world.generator.getBiome(x, z) instanceof IdentifierBiome identifierBiome) {
-                RegistryEntry<Biome> entry =  biomes.get(identifierBiome.getIdentifier());
-                if (entry!=null){
-                    return entry;
-                }
-        }
-
-         */
         return defaultBiome;
     }
 
