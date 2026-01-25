@@ -19,7 +19,7 @@ public class HighLands extends Landform {
     public HighLands() {
         super(landformFactor/2f, Placement.Elevation.highland, Climate.tundra, Climate.steppe, Climate.polarDesert);
         register(new StratumConfig(Materials.stone.getKey(), 24, 50, 5));
-        register(new StratumConfig(Materials.sandstone.getKey(), 3, 5, 2));
+        register(new StratumConfig(Materials.tuff.getKey(), 3, 5, 2));
         register(new StratumConfig(Materials.deepslate.getKey(), 12, 24, 2));
     }
 

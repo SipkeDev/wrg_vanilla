@@ -15,7 +15,6 @@ public class PreWRGVanilla implements PreLaunchEntrypoint {
     public static JFrame frame;
 
     public void onPreLaunch() {
-        System.out.println("TEST");
         try {
             this.initSplashscreen();
         } catch (IOException e) {
@@ -31,7 +30,7 @@ public class PreWRGVanilla implements PreLaunchEntrypoint {
 
         int w = image.getWidth()/2, h = image.getHeight()/2;
 
-        ImageIcon icon = new ImageIcon(image.getScaledInstance(w, h, Image.SCALE_AREA_AVERAGING));
+        ImageIcon icon = new ImageIcon(image.getScaledInstance(w, h, Image.SCALE_SMOOTH));
 
         Color t = new Color(0,0,0,0);
         JLabel label = new JLabel("", SwingConstants.CENTER);

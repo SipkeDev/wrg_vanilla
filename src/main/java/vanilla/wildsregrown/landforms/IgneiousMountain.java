@@ -13,13 +13,10 @@ import vanilla.wildsregrown.registries.Materials;
 
 import static com.sipke.WorldConstants.landformFactor;
 
-public class MountainRidge extends Landform {
+public class IgneiousMountain extends Landform {
 
-    public MountainRidge() {
+    public IgneiousMountain() {
         super(landformFactor, Placement.Elevation.mountain, Climate.chaparral, Climate.coniferousForest, Climate.polarDesert, Climate.tundra, Climate.hotScrubland, Climate.coolScrubland, Climate.mixedForest, Climate.coniferousForest, Climate.steppe);
-        register(new StratumConfig(Materials.stone.getKey(), 12, 34, 5));
-        register(new StratumConfig(Materials.black_stone.getKey(), 5, 12, 1));
-        register(new StratumConfig(Materials.calcite.getKey(), 2, 4, 1));
         register(new StratumConfig(Materials.granite.getKey(), 2, 4, 1));
         register(new StratumConfig(Materials.andesite.getKey(), 2, 4, 1));
         register(new StratumConfig(Materials.diorite.getKey(), 2, 4, 1));
@@ -34,8 +31,8 @@ public class MountainRidge extends Landform {
                 .pingpong(3, 2.25f, 0.5f, 0.5f, 2)
                 .multiply(0.12f);
 
-        return NoiseGenerator.perlin(seed.next(), 2200)
-                .ridged(5)
+        return NoiseGenerator.cubic(seed.next(), 1200)
+                .fbm(5)
                 .subtract(erosion)
                 .multiply(Constant.of(edge).map(MapType.almostUnitIdentity, 0.002f, 0.88f));
     }

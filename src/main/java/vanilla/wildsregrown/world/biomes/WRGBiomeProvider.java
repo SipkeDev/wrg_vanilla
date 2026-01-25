@@ -6,19 +6,23 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.Lifecycle;
 import com.mojang.serialization.MapCodec;
 import com.sipke.World;
+import net.minecraft.SharedConstants;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.*;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
+import org.jspecify.annotations.Nullable;
 import vanilla.wildsregrown.WRGVanilla;
 import vanilla.wildsregrown.api.IdentifiableRegistery;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public class WRGBiomeProvider extends BiomeSource {
@@ -31,7 +35,6 @@ public class WRGBiomeProvider extends BiomeSource {
 
     private final RegistryEntry<Biome> defaultBiome;
     private final HashMap<Identifier, RegistryEntry<Biome>> biomes;
-    private World world;
 
     private WRGBiomeProvider(Either<MultiNoiseUtil.Entries<RegistryEntry<Biome>>, RegistryEntry<MultiNoiseBiomeSourceParameterList>> biomeEntries) {
         this.biomeEntries = biomeEntries;
@@ -42,10 +45,6 @@ public class WRGBiomeProvider extends BiomeSource {
 
     public HashMap<Identifier, RegistryEntry<Biome>> getMap() {
         return biomes;
-    }
-
-    public void setWorld(World world) {
-        this.world = world;
     }
 
     @Override
@@ -63,7 +62,48 @@ public class WRGBiomeProvider extends BiomeSource {
 
     @Override
     public RegistryEntry<Biome> getBiome(int x, int y, int z, MultiNoiseUtil.MultiNoiseSampler noise) {
-        return defaultBiome;
+        //WRGVanilla.LOGGER.info("Hello?" + x + " " + y + " " + z);
+        return biomes.get(((IdentifiableRegistery)World.instance.generator.getBiome(x, z)).getIdentifier());
+    }
+
+    @Override
+    public @Nullable Pair<BlockPos, RegistryEntry<Biome>> locateBiome(int x, int y, int z, int radius, int blockCheckInterval, Predicate<RegistryEntry<Biome>> predicate, Random random, boolean bl, MultiNoiseUtil.MultiNoiseSampler noiseSampler) {
+        Pair<BlockPos, RegistryEntry<Biome>> pair = null;
+        int m = 0;
+        int n = bl ? 0 : radius;
+
+        for(int o = n; o <= radius; o += blockCheckInterval) {
+            for(int p = !SharedConstants.ONLY_GENERATE_HALF_THE_WORLD && !SharedConstants.DEBUG_BIOME_SOURCE ? -o : 0; p <= o; p += blockCheckInterval) {
+                boolean bl2 = Math.abs(p) == o;
+
+                for(int q = -o; q <= o; q += blockCheckInterval) {
+                    if (bl) {
+                        boolean bl3 = Math.abs(q) == o;
+                        if (!bl3 && !bl2) {
+                            continue;
+                        }
+                    }
+
+                    int r = x + q;
+                    int s = z + p;
+                    RegistryEntry<Biome> registryEntry = this.getBiome(r, y, s, null);
+                    if (predicate.test(registryEntry)) {
+                        if (pair == null || random.nextInt(m + 1) == 0) {
+                            BlockPos blockPos = new BlockPos(r, y, s);
+                            if (bl) {
+                                return Pair.of(blockPos, registryEntry);
+                            }
+
+                            pair = Pair.of(blockPos, registryEntry);
+                        }
+
+                        ++m;
+                    }
+                }
+            }
+        }
+
+        return pair;
     }
 
     @Override

@@ -14,26 +14,22 @@ import java.awt.*;
 
 public class WorldTypeCamera extends Camera<GridCtx> implements Drawable, IRenderType {
 
-    private Seed seed;
-    private Screen parent;
-
-    public WorldTypeCamera(Screen parent){
-        super(256);
-        this.parent = parent;
+    public WorldTypeCamera(int size){
+        super(256, size);
     }
 
     public void takeShot(GridCtx ctx) {
 
-        this.seed = new Seed(ctx.seed);
+        Seed seed = new Seed(ctx.seed);
 
         for (int x = 0; x < res; x++) {
             for (int y = 0; y < res; y++) {
 
                 switch (cameraRender) {
-                    case region -> {
+                    case climate -> {
                         setPixel(x, y, Climate.getRegion(
-                                ctx.type.temparature(seed, res).getNoise(x, y),
-                                ctx.type.rainfall(seed, res).getNoise(x, y),
+                                MathUtil.float01(ctx.config.getTemperature()+ctx.type.temparature(seed, res).getNoise(x, y)),
+                                MathUtil.float01(ctx.config.getRainfall()+ctx.type.rainfall(seed, res).getNoise(x, y)),
                                 ctx.type.continent(seed, res).getNoise(x, y)
                         ).getRgb());
                     }
@@ -42,6 +38,12 @@ public class WorldTypeCamera extends Camera<GridCtx> implements Drawable, IRende
                     }
                     case height -> {
                         setPixel(x, y, Color.HSBtoRGB(0f, 0f, ctx.type.continent(seed, res).getNoise(x, y)));
+                    }
+                    case moisture -> {
+                        setPixel(x, y, Color.HSBtoRGB(0f, 0f,  MathUtil.float01(ctx.config.getRainfall()+ctx.type.rainfall(seed, res).getNoise(x, y))));
+                    }
+                    case temperature -> {
+                        setPixel(x, y, Color.HSBtoRGB(0f, 0f,  MathUtil.float01(ctx.config.getTemperature()+ctx.type.temparature(seed, res).getNoise(x, y))));
                     }
                 }
 
@@ -52,8 +54,8 @@ public class WorldTypeCamera extends Camera<GridCtx> implements Drawable, IRende
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        int size = MathUtil.min(parent.width, parent.height);
-        context.state.addSimpleElement(new RenderWorldMap(RenderPipelines.GUI, TextureSetup.empty(), context.getMatrices(), this.getImage(), size, res, null));
+        //int size = MathUtil.min(parent.width, parent.height);
+        context.state.addSimpleElement(new RenderWorldMap(RenderPipelines.GUI, TextureSetup.empty(), context.getMatrices(), this.getImage(), size, res, this.getX(), this.getY(), null));
     }
 
 }

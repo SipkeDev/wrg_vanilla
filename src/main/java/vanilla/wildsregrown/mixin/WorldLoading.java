@@ -1,6 +1,7 @@
 package vanilla.wildsregrown.mixin;
 
 
+import com.sipke.World;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
@@ -31,12 +32,9 @@ public class WorldLoading {
             if (server.isDedicated()) {
                 WRGVanilla.LOGGER.info("Server path: " + server.getPath("world"));
                 WRGVanilla.LOGGER.info("Session path: " + session.getWorldDirectory(worldKey));
-                chunk.getWorld().load(server.getPath("world"));
+                World.instance.load(server.getPath("world"));
             } else {
-                chunk.getWorld().load(session.getWorldDirectory(worldKey));
-            }
-            if (chunk.getBiomeSource() instanceof WRGBiomeProvider provider){
-                provider.setWorld(chunk.getWorld());
+                World.instance.load(session.getWorldDirectory(worldKey));
             }
         }
 

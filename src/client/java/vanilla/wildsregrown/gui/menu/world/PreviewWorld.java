@@ -2,18 +2,13 @@ package vanilla.wildsregrown.gui.menu.world;
 
 import com.sipke.api.grid.WorldGrid;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 import vanilla.wildsregrown.gui.menu.camera.CameraRender;
 import vanilla.wildsregrown.gui.menu.camera.GridCamera;
-
-import static vanilla.wildsregrown.WRGVanilla.modid;
 
 public class PreviewWorld extends Screen {
 
@@ -38,7 +33,7 @@ public class PreviewWorld extends Screen {
 
         int y = 8, m = 18, dx = -124;
 
-        this.addDrawableChild(ButtonWidget.builder(Text.literal("Region"),          (button) -> {this.camera.setRender(CameraRender.region);this.camera.takeShot(grid);}).dimensions(this.width + dx, y+=m, 100 , 20).tooltip(Tooltip.of(Text.literal("Main menu"))).build());
+        this.addDrawableChild(ButtonWidget.builder(Text.literal("Region"),          (button) -> {this.camera.setRender(CameraRender.climate);this.camera.takeShot(grid);}).dimensions(this.width + dx, y+=m, 100 , 20).tooltip(Tooltip.of(Text.literal("Main menu"))).build());
         this.addDrawableChild(ButtonWidget.builder(Text.literal("Height"),          (button) -> {this.camera.setRender(CameraRender.height);this.camera.takeShot(grid);}).dimensions(this.width + dx, y+=m, 100 , 20).tooltip(Tooltip.of(Text.literal("Main menu"))).build());
         this.addDrawableChild(ButtonWidget.builder(Text.literal("Elevation"),          (button) -> {this.camera.setRender(CameraRender.elevation);this.camera.takeShot(grid);}).dimensions(this.width + dx, y+=m, 100 , 20).tooltip(Tooltip.of(Text.literal("Main menu"))).build());
         this.addDrawableChild(ButtonWidget.builder(Text.literal("Temperature"),     (button) -> {this.camera.setRender(CameraRender.temperature);this.camera.takeShot(grid);}).dimensions(this.width + dx, y+=m, 100 , 20).tooltip(Tooltip.of(Text.literal("Main menu"))).build());

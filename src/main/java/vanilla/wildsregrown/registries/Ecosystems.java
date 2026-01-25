@@ -5,6 +5,7 @@ import com.sipke.registeries.WorldRegistries;
 import com.sipke.registeries.core.RegistryObject;
 import vanilla.wildsregrown.WRGVanilla;
 import vanilla.wildsregrown.ecosystems.*;
+import vanilla.wildsregrown.ecosystems.sea.*;
 
 public class Ecosystems {
 
@@ -18,8 +19,16 @@ public class Ecosystems {
 
     public static final RegistryObject<Ecosystem> steppe = WorldRegistries.ECOSYSTEMS.register(new Steppe());
     public static final RegistryObject<Ecosystem> mixed_forest = WorldRegistries.ECOSYSTEMS.register(new MixedForest());
-    public static final RegistryObject<Ecosystem> cool_shrubland = WorldRegistries.ECOSYSTEMS.register(new HotShrubland());
+    public static final RegistryObject<Ecosystem> hot_shrubland = WorldRegistries.ECOSYSTEMS.register(new HotShrubland());
+    public static final RegistryObject<Ecosystem> cool_shrubland = WorldRegistries.ECOSYSTEMS.register(new CoolShrubland());
     public static final RegistryObject<Ecosystem> hot_desert = WorldRegistries.ECOSYSTEMS.register(new HotDesert());
+    public static final RegistryObject<Ecosystem> cool_desert = WorldRegistries.ECOSYSTEMS.register(new CoolDesert());
+    public static final RegistryObject<Ecosystem> savanna = WorldRegistries.ECOSYSTEMS.register(new Savanna());
+    public static final RegistryObject<Ecosystem> spirit_forest = WorldRegistries.ECOSYSTEMS.register(new SpiritForest());
+
+    public static final RegistryObject<Ecosystem> ancient_forest = WorldRegistries.ECOSYSTEMS.register(new AncientForest());
+    public static final RegistryObject<Ecosystem> coniferious_forest = WorldRegistries.ECOSYSTEMS.register(new ConiferiousForest());
+    public static final RegistryObject<Ecosystem> decidious_forest = WorldRegistries.ECOSYSTEMS.register(new DecidiousForest());
 
     public static void init(){
         WorldRegistries.ECOSYSTEMS.bootstrap();

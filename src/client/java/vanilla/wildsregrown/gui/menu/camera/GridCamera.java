@@ -28,12 +28,10 @@ import java.util.ArrayList;
 public class GridCamera extends Camera<WorldGrid> implements Drawable, IRenderType {
 
     private final Screen parent;
-    private final int size;
 
     public GridCamera(Screen parent, int size){
-        super(256);
+        super(256, size);
         this.parent = parent;
-        this.size = size;
     }
 
     public void takeShot(WorldGrid grid) {
@@ -53,7 +51,7 @@ public class GridCamera extends Camera<WorldGrid> implements Drawable, IRenderTy
 
                 switch (cameraRender){
 
-                    case region -> {
+                    case climate -> {
                         TileCell tileCell = getPos(grid.getEcosystems(), dx, dy);
                         Ecosystem ecosystem = WorldRegistries.ECOSYSTEMS.get(tileCell.getCell().getConfig());
                         setPixel(x, y, ecosystem.getClimate().getRgb());
@@ -163,18 +161,16 @@ public class GridCamera extends Camera<WorldGrid> implements Drawable, IRenderTy
 
 
     private int translateCoord(int v){
-        return (int) MathUtil.range(v, 0, this.res, 0, size);
+        return (int) MathUtil.range(v, 0, this.res, 0, this.size);
     }
     private int translateOverlay(float v){
-        return (int) MathUtil.range(v, 0, size, 0, this.res);
+        return (int) MathUtil.range(v, 0, this.size, 0, this.res);
     }
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-
         int size = MathUtil.min(parent.width, parent.height);
-        context.state.addSimpleElement(new RenderWorldMap(RenderPipelines.GUI, TextureSetup.empty(), context.getMatrices(), this.getImage(), size, res, null));
-
+        context.state.addSimpleElement(new RenderWorldMap(RenderPipelines.GUI, TextureSetup.empty(), context.getMatrices(), this.getImage(), size, res, this.getX(), this.getY(), null));
     }
 
     private <T extends Cell> TileCell getPos(ArrayList<T> cells, float x, float z){

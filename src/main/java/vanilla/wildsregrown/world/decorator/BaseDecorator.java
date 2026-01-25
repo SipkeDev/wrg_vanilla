@@ -11,6 +11,8 @@ import net.minecraft.block.Blocks;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import vanilla.wildsregrown.WRGVanilla;
+import vanilla.wildsregrown.api.IdentifiableRegistery;
 import vanilla.wildsregrown.api.materials.IdentifierMaterial;
 import vanilla.wildsregrown.api.materials.VanillaMaterial;
 import vanilla.wildsregrown.world.WRGChunkGenerator;
@@ -60,14 +62,11 @@ public class BaseDecorator implements Decorator {
                     GeoMaterial material = WorldRegistries.MATERIALS.get(stratum.geoKey);
 
                     Block block = Blocks.STONE;
-                    if (material instanceof VanillaMaterial id){
-                        block = Registries.BLOCK.get(id.getIdentifier());
-                        //WRGVanilla.LOGGER.info(id.getIdentifier().getPath() + " / " + block);
-                    } else if (material instanceof IdentifierMaterial id) {
-                        block = Registries.BLOCK.get(id.getIdentifier());
-                    }
                     if (WorldRegistries.MATERIALS.isAir(stratum)){
                         block = Blocks.AIR;
+                    }else
+                    if (material instanceof IdentifiableRegistery id) {
+                        block = Registries.BLOCK.get(id.getIdentifier());
                     }
 
                     for (int k = stratum.getFloor(); k < stratum.getCeil(); k++) {

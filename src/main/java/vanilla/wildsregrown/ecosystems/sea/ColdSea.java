@@ -1,4 +1,4 @@
-package vanilla.wildsregrown.ecosystems;
+package vanilla.wildsregrown.ecosystems.sea;
 
 import com.sipke.api.categorization.Climate;
 import com.sipke.api.terrain.Ecosystem;

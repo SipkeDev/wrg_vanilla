@@ -5,11 +5,11 @@ import com.sipke.api.categorization.Placement;
 import com.sipke.api.terrain.Ecosystem;
 import vanilla.wildsregrown.registries.Biomes;
 
-public class Sea extends Ecosystem {
+public class CoolDesert extends Ecosystem {
 
-    public Sea() {
-        super(Climate.temperateSea, Biomes.ocean);
-        register(Placement.Biome.normal, Biomes.lukewarm_ocean);
+    public CoolDesert() {
+        super(Climate.coolDesert, Biomes.desert);
+        register(Placement.Biome.normal, Biomes.windswept_savanna);
     }
 
 }

@@ -1,6 +1,14 @@
 package vanilla.wildsregrown.mixin;
 
+import net.minecraft.SharedConstants;
+import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.structure.StructureTemplateManager;
+import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
+import net.minecraft.world.gen.chunk.placement.StructurePlacementCalculator;
 import net.minecraft.world.gen.feature.util.PlacedFeatureIndexer;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,7 +22,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 @Mixin(ChunkGenerator.class)
-public class MixinChunkGenerator{
+public class MixinChunkGenerator {
 
     @Final
     @Shadow

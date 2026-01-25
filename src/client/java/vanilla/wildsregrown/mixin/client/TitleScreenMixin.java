@@ -20,7 +20,7 @@ public abstract class TitleScreenMixin extends Screen {
 
 	@Inject(at = @At("TAIL"), method = "Lnet/minecraft/client/gui/screen/TitleScreen;init()V")
 	public void init(CallbackInfo info) {
-		this.addDrawableChild(ButtonWidget.builder(Text.literal("World Painter"), (button) -> this.client.setScreen(new WorldTypeScreen(new WorldBuilder(),this))).dimensions(0, 0, 200, 20).build());
+		this.addDrawableChild(ButtonWidget.builder(Text.literal("World Painter"), (button) -> this.client.setScreen(new WorldTypeScreen(new WorldBuilder(),this))).dimensions((this.width/2)-50, 0, 100, 20).build());
 	}
 
 }
