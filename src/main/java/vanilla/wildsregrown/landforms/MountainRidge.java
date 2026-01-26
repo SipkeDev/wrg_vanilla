@@ -11,12 +11,10 @@ import com.sipke.math.MapType;
 import com.sipke.noise2d.Noise;
 import vanilla.wildsregrown.registries.Materials;
 
-import static com.sipke.WorldConstants.landformFactor;
-
 public class MountainRidge extends Landform {
 
     public MountainRidge() {
-        super(landformFactor, Placement.Elevation.mountain, Climate.chaparral, Climate.coniferousForest, Climate.polarDesert, Climate.tundra, Climate.hotScrubland, Climate.coolScrubland, Climate.mixedForest, Climate.coniferousForest, Climate.steppe);
+        super(1f, Placement.Elevation.mountain, Climate.chaparral, Climate.coniferousForest, Climate.polarDesert, Climate.tundra, Climate.hotScrubland, Climate.coolScrubland, Climate.mixedForest, Climate.coniferousForest, Climate.steppe);
         register(new StratumConfig(Materials.stone.getKey(), 12, 34, 5));
         register(new StratumConfig(Materials.black_stone.getKey(), 5, 12, 1));
         register(new StratumConfig(Materials.calcite.getKey(), 2, 4, 1));

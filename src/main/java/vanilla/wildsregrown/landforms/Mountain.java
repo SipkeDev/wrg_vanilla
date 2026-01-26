@@ -11,12 +11,10 @@ import com.sipke.math.MapType;
 import com.sipke.noise2d.Noise;
 import vanilla.wildsregrown.registries.Materials;
 
-import static com.sipke.WorldConstants.landformFactor;
-
 public class Mountain extends Landform {
 
     public Mountain() {
-        super(landformFactor, Placement.Elevation.mountain, Climate.chaparral, Climate.coniferousForest, Climate.polarDesert, Climate.tundra);
+        super(1f, Placement.Elevation.mountain, Climate.chaparral, Climate.coniferousForest, Climate.polarDesert, Climate.tundra);
         register(new StratumConfig(Materials.stone.getKey(), 12, 34, 5));
         register(new StratumConfig(Materials.sandstone.getKey(), 3, 5, 2));
         register(new StratumConfig(Materials.deepslate.getKey(), 5, 24, 2));

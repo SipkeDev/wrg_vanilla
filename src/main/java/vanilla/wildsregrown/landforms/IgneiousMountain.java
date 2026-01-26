@@ -11,12 +11,10 @@ import com.sipke.math.MapType;
 import com.sipke.noise2d.Noise;
 import vanilla.wildsregrown.registries.Materials;
 
-import static com.sipke.WorldConstants.landformFactor;
-
 public class IgneiousMountain extends Landform {
 
     public IgneiousMountain() {
-        super(landformFactor, Placement.Elevation.mountain, Climate.chaparral, Climate.coniferousForest, Climate.polarDesert, Climate.tundra, Climate.hotScrubland, Climate.coolScrubland, Climate.mixedForest, Climate.coniferousForest, Climate.steppe);
+        super(0.8f, Placement.Elevation.mountain, Climate.chaparral, Climate.coniferousForest, Climate.polarDesert, Climate.tundra, Climate.hotScrubland, Climate.coolScrubland, Climate.mixedForest, Climate.coniferousForest, Climate.steppe);
         register(new StratumConfig(Materials.granite.getKey(), 2, 4, 1));
         register(new StratumConfig(Materials.andesite.getKey(), 2, 4, 1));
         register(new StratumConfig(Materials.diorite.getKey(), 2, 4, 1));

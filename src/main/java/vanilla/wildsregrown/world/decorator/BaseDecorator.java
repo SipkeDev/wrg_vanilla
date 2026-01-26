@@ -61,12 +61,13 @@ public class BaseDecorator implements Decorator {
                     Stratum stratum = strata.get(i);
                     GeoMaterial material = WorldRegistries.MATERIALS.get(stratum.geoKey);
 
+                    //WRGVanilla.LOGGER.info(material.name + " / " + stratum.geoKey);
+
                     Block block = Blocks.STONE;
-                    if (WorldRegistries.MATERIALS.isAir(stratum)){
-                        block = Blocks.AIR;
-                    }else
                     if (material instanceof IdentifiableRegistery id) {
                         block = Registries.BLOCK.get(id.getIdentifier());
+                    }else if (WorldRegistries.MATERIALS.isAir(stratum)){
+                        block = Blocks.CAVE_AIR;
                     }
 
                     for (int k = stratum.getFloor(); k < stratum.getCeil(); k++) {

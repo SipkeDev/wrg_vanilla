@@ -2,6 +2,7 @@ package vanilla.wildsregrown.gui.menu.builder;
 
 import com.sipke.builder.WorldBuilder;
 import com.sipke.math.MathUtil;
+import com.sipke.api.grid.WRGConfig;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gl.RenderPipelines;
@@ -19,9 +20,7 @@ import net.minecraft.util.Identifier;
 import org.jspecify.annotations.Nullable;
 import vanilla.wildsregrown.gui.menu.camera.CameraRender;
 import vanilla.wildsregrown.gui.menu.camera.WorldTypeCamera;
-import vanilla.wildsregrown.world.builder.WorldAge;
-import vanilla.wildsregrown.world.builder.WorldMultiplier;
-import vanilla.wildsregrown.world.builder.WorldSize;
+import vanilla.wildsregrown.world.builder.*;
 
 import static com.sipke.WorldConstants.chunkSize;
 
@@ -74,7 +73,7 @@ public class ConfigScreen extends Screen {
                         new Climate(),
                         new WorldTab(),
                         new Filters(),
-                        new Features(),
+                        //new Features(),
                         new Disclaimer()
                 }).build();
         this.addDrawableChild(this.tabNavigation);
@@ -113,13 +112,53 @@ public class ConfigScreen extends Screen {
 
         Climate() {
             super(Text.of("Climate"));
-            GridWidget.Adder adder = this.grid.setSpacing(5).createAdder(2);
-            Positioner positioner = adder.copyPositioner().alignRight();
+            int w = 80;
+            this.grid.setRowSpacing(8);
+            this.grid.setColumnSpacing(5);
+            Positioner positioner = this.grid.copyPositioner();
 
-            adder.add(new EmptyWidget(width/2, 10), 1);
+            this.grid.add(new EmptyWidget(width/4,10), 1, 1, positioner);
+            this.grid.add(new EmptyWidget(width/4,10), 1, 2, positioner);
 
-            adder.add(new TextWidget(0, 0, 100, 20, Text.literal("Temperature"), textRenderer), 2, positioner);
-            adder.add(new SliderWidget(0, 0, 100, 20, Text.of(String.valueOf(builder.ctx.config.getTemperature()).substring(0, 3)), 0.5f) {
+            this.grid.add(CyclingButtonWidget.builder(WorldTypeRenderSelector::getDisplayText, WorldTypeRenderSelector.climate).values(WorldTypeRenderSelector.values()).build(0,0, w, 20, Text.literal("Camera"),
+                    (button, value) -> {
+                camera.setRender(switch (value){
+                    case climate -> CameraRender.climate;
+                    case height -> CameraRender.height;
+                    case temperature -> CameraRender.temperature;
+                    case rainfall -> CameraRender.rainfall;
+                });
+                camera.takeShot(builder.ctx);
+            }), 1,3, positioner);
+            this.grid.add(new TextWidget(0, 0, w, 20, Text.literal("Height"), textRenderer), 2,3, positioner);
+            this.grid.add(new SliderWidget(0, 0, w, 20, Text.of(String.valueOf(builder.ctx.config.getHeightMod()).substring(0, 3)), builder.ctx.config.getHeightMod()+0.5) {
+                @Override
+                protected void updateMessage() {
+                    setMessage(Text.of(shortenSliderValue(value-0.5)));}
+                @Override
+                protected void applyValue() {
+                    builder.ctx.config.setHeightMod((float)value-0.5f);
+                    camera.takeShot(builder.ctx);
+                }
+            }, 3, 3, positioner);
+            this.grid.add(new SliderWidget(0, 0, w, 20, Text.of(shortenSliderValue(builder.ctx.config.getHeightModClamp())), builder.ctx.config.getHeightModClamp()*2.0) {
+                @Override
+                protected void updateMessage() {
+                    setMessage(Text.of(shortenSliderValue(value/2.0)));}
+                @Override
+                protected void applyValue() {
+                    builder.ctx.config.setHeightModClamp((float)(value/2.0));
+                    camera.takeShot(builder.ctx);
+                }
+            }, 4,3, positioner);
+            this.grid.add(CyclingButtonWidget.builder(MapSelector::getDisplayText, MapSelector.linear).values(MapSelector.values()).build(0,0, w, 20, Text.literal("Type"),
+                    (button, value) -> {builder.ctx.config.setHeightType(value.getType());camera.takeShot(builder.ctx);}
+            ), 5,3, positioner);
+
+
+            this.grid.add(new EmptyWidget(w,10), 1, 4, positioner);
+            this.grid.add(new TextWidget(0, 0, w, 20, Text.literal("Temperature"), textRenderer), 2, 4, positioner);
+            this.grid.add(new SliderWidget(0, 0, w, 20, Text.of(String.valueOf(builder.ctx.config.getTemperature()).substring(0, 3)), builder.ctx.config.getTemperature()+0.5) {
                 @Override
                 protected void updateMessage() {
                     setMessage(Text.of(shortenSliderValue(value-0.5)));
@@ -129,10 +168,25 @@ public class ConfigScreen extends Screen {
                     builder.ctx.config.setTemperature((float)value-0.5f);
                     camera.takeShot(builder.ctx);
                 }
-            }, 2, positioner);
+            }, 3,4, positioner);
+            this.grid.add(new SliderWidget(0, 0, w, 20, Text.of(shortenSliderValue(builder.ctx.config.getTemperatureClamp())), builder.ctx.config.getTemperatureClamp()*2.0) {
+                @Override
+                protected void updateMessage() {
+                    setMessage(Text.of(shortenSliderValue(value/2.0)));}
+                @Override
+                protected void applyValue() {
+                    builder.ctx.config.setTemperatureClamp((float)(value/2.0));
+                    camera.takeShot(builder.ctx);
+                }
+            }, 4,4, positioner);
+            this.grid.add(CyclingButtonWidget.builder(MapSelector::getDisplayText, MapSelector.linear).values(MapSelector.values()).build(0,0, w, 20, Text.literal("Type"),
+                    (button, value) -> {builder.ctx.config.setTemperatureType(value.getType());camera.takeShot(builder.ctx);}
+            ), 5,4, positioner);
 
-            adder.add(new TextWidget(0, 0, 100, 20, Text.literal("RainFall"), textRenderer), 2, positioner);
-            adder.add(new SliderWidget(0, 0, 100, 20, Text.of(String.valueOf(builder.ctx.config.getRainfall()).substring(0, 3)), 0.5f) {
+
+            this.grid.add(new EmptyWidget(width/4,10), 1, 5, positioner);
+            this.grid.add(new TextWidget(0, 0, w, 20, Text.literal("RainFall"), textRenderer), 2, 5, positioner);
+            this.grid.add(new SliderWidget(0, 0, w, 20, Text.of(String.valueOf(builder.ctx.config.getRainfall()).substring(0, 3)), builder.ctx.config.getHeightMod()+0.5) {
                 @Override
                 protected void updateMessage() {
                     setMessage(Text.of(shortenSliderValue(value-0.5)));}
@@ -142,7 +196,20 @@ public class ConfigScreen extends Screen {
                     //camera.setRender(CameraRender.temperature);
                     camera.takeShot(builder.ctx);
                 }
-            }, 2, positioner);
+            }, 3,5, positioner);
+            this.grid.add(new SliderWidget(0, 0, w, 20, Text.of(shortenSliderValue(builder.ctx.config.getRainfallClamp())), builder.ctx.config.getRainfallClamp()*2.0) {
+                @Override
+                protected void updateMessage() {
+                    setMessage(Text.of(shortenSliderValue(value/2.0)));}
+                @Override
+                protected void applyValue() {
+                    builder.ctx.config.setRainfallClamp((float)(value/2.0));
+                    camera.takeShot(builder.ctx);
+                }
+            }, 4,5, positioner);
+            this.grid.add(CyclingButtonWidget.builder(MapSelector::getDisplayText, MapSelector.linear).values(MapSelector.values()).build(0,0, w, 20, Text.literal("Type"),
+                    (button, value) -> {builder.ctx.config.setRainfallType(value.getType());camera.takeShot(builder.ctx);}
+            ), 5,5, positioner);
 
         }
 
@@ -171,7 +238,7 @@ public class ConfigScreen extends Screen {
             this.grid.add(totalSize, 4,1, positioner);
 
             this.grid.add(new TextWidget(0, 0, 100, 20, Text.literal("Cell scale"), textRenderer), 1, 2, positioner);
-            this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Landform " + 0.5), 0.5f) {
+            this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Landform " + shortenSliderValue(builder.ctx.config.getLandformScale())), builder.ctx.config.getLandformScale()) {
                 @Override
                 protected void updateMessage() {
                     message = Text.of("Landform " + shortenSliderValue(value));
@@ -181,7 +248,7 @@ public class ConfigScreen extends Screen {
                     builder.ctx.config.setLandformScale((float)value);
                 }
             }, 2,2, positioner);
-            this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Ecosystem " + 0.5), 0.5f) {
+            this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Ecosystem " + shortenSliderValue(builder.ctx.config.getEcoSystemScale())), builder.ctx.config.getEcoSystemScale()) {
                 @Override
                 protected void updateMessage() {
                     message = Text.of("Ecosystem " + shortenSliderValue(value));
@@ -191,7 +258,7 @@ public class ConfigScreen extends Screen {
                     builder.ctx.config.setEcoSystemScale((float)value);
                 }
             }, 3,2, positioner);
-            this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Biome " + 0.5), 0.5f) {
+            this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Biome " + shortenSliderValue(builder.ctx.config.getBiomeScale())), builder.ctx.config.getBiomeScale()) {
                 @Override
                 protected void updateMessage() {
                     message = Text.of("Biome " + shortenSliderValue(value));
@@ -204,37 +271,37 @@ public class ConfigScreen extends Screen {
 
             //Height/factor
             this.grid.add(new TextWidget(0, 0, 100, 20, Text.literal("Height Factors"), textRenderer), 1, 3, positioner);
-            this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Continent " + MathUtil.range(builder.ctx.config.getContinentFactor(), 0, 1, 128, 384)), builder.ctx.config.getContinentFactor()) {
+            this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Continent " + WRGConfig.calcContinentFactor(builder.ctx.config.getContinentFactor())), builder.ctx.config.getContinentFactor()) {
                 @Override
                 protected void updateMessage() {
-                    message = Text.of("Continent " + shortenSliderValue(MathUtil.range((float)value, 0, 1, 128, 384)));
+                    message = Text.of("Continent " + shortenSliderValue(WRGConfig.calcContinentFactor((float)value)));
                 }
                 @Override
                 protected void applyValue() {
-                    builder.ctx.config.setLandformScale((float)value);
+                    builder.ctx.config.setContinentFactor((float)value);
                 }
             }, 2,3, positioner);
-            this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Landform " + MathUtil.range(builder.ctx.config.getLandformFactor(), 0, 1, 128, 512)), builder.ctx.config.getLandformFactor()) {
+            this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Landform " + WRGConfig.calcLandformFactor(builder.ctx.config.getBiomeFactor())), builder.ctx.config.getLandformFactor()) {
                 @Override
                 protected void updateMessage() {
-                    message = Text.of("Landform: " + shortenSliderValue(MathUtil.range((float)value, 0, 1, 128, 512)));
+                    message = Text.of("Landform: " + shortenSliderValue(WRGConfig.calcLandformFactor((float)value)));
                 }
                 @Override
                 protected void applyValue() {
-                    builder.ctx.config.setEcoSystemScale((float)value);
+                    builder.ctx.config.setLandformFactor((float)value);
                 }
             }, 3,3, positioner);
-            this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Biome " + MathUtil.range(builder.ctx.config.getBiomeFactor(), 0, 1, 8, 32)), builder.ctx.config.getBiomeFactor()) {
+            this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Biome " + WRGConfig.calcBiomeFactor(builder.ctx.config.getBiomeFactor())), builder.ctx.config.getBiomeFactor()) {
                 @Override
                 protected void updateMessage() {
-                    message = Text.of("Biome: " + shortenSliderValue(MathUtil.range((float)value, 0, 1, 8, 32)));
+                    message = Text.of("Biome: " + shortenSliderValue(WRGConfig.calcBiomeFactor((float)value)));
                 }
                 @Override
                 protected void applyValue() {
-                    builder.ctx.config.setEcoSystemScale((float)value);
+                    builder.ctx.config.setBiomeFactor((float)value);
                 }
             }, 4,3, positioner);
-            this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("WaterLevel " + builder.ctx.config.getWaterlevel()), builder.ctx.config.getWaterlevel()) {
+            this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("WaterLevel " + builder.ctx.config.getWaterLevel()), builder.ctx.config.getWaterLevel()) {
                 @Override
                 protected void updateMessage() {
                     message = Text.of("Waterlevel " + shortenSliderValue(MathUtil.range((float)value, 0, 1, 0, 384)));
@@ -262,7 +329,7 @@ public class ConfigScreen extends Screen {
                     (button, v) -> {
                         builder.ctx.config.setWorldAge(v.getId());
                         builder.ctx.age = v.getId();
-                    }), 2, 1, positioner);
+                    }), 2, 1, positioner).setTooltip(Tooltip.of(Text.of("Changes the amount of cycles, older means more erosion but slower performance.")));
             this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Inertia " + shortenSliderValue(builder.ctx.config.getErosionInertia())), builder.ctx.config.getErosionInertia()) {
                 @Override
                 protected void updateMessage() {
@@ -272,7 +339,7 @@ public class ConfigScreen extends Screen {
                 protected void applyValue() {
                     builder.ctx.config.setErosionInertia((float)value);
                 }
-            }, 3,1, positioner);
+            }, 3,1, positioner).setTooltip(Tooltip.of(Text.of("Changes the tendency to move direction")));
             this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Friction " + shortenSliderValue(builder.ctx.config.getErosionFriction())), builder.ctx.config.getErosionFriction()) {
                 @Override
                 protected void updateMessage() {
@@ -280,9 +347,29 @@ public class ConfigScreen extends Screen {
                 }
                 @Override
                 protected void applyValue() {
-                    builder.ctx.config.setEcoSystemScale((float)value);
+                    builder.ctx.config.setErosionFriction((float)value);
                 }
-            }, 4,1, positioner);
+            }, 4,1, positioner).setTooltip(Tooltip.of(Text.of("Changes how much velocity is kept for each step")));
+            this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Capacity " + shortenSliderValue(builder.ctx.config.getErosionCapacity())), builder.ctx.config.getErosionCapacity()) {
+                @Override
+                protected void updateMessage() {
+                    message = Text.of("Capacity " + shortenSliderValue(value));
+                }
+                @Override
+                protected void applyValue() {
+                    builder.ctx.config.setErosionCapacity((float)value);
+                }
+            }, 5,1, positioner).setTooltip(Tooltip.of(Text.of("How much sediment the stream carries")));
+            this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Rate " + shortenSliderValue(builder.ctx.config.getErosionRate())), builder.ctx.config.getErosionRate()) {
+                @Override
+                protected void updateMessage() {
+                    message = Text.of("Rate " + shortenSliderValue(value));
+                }
+                @Override
+                protected void applyValue() {
+                    builder.ctx.config.setErosionRate((float)value);
+                }
+            }, 6,1, positioner).setTooltip(Tooltip.of(Text.of("Rate of picking up/depositing sediment")));
 
             this.grid.add(new TextWidget(0, 0, 100, 20, Text.literal("MainRivers"), textRenderer), 1, 2, positioner);
             this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Inertia " + shortenSliderValue(builder.ctx.config.getMainRiverInertia())), builder.ctx.config.getMainRiverInertia()) {
@@ -292,7 +379,7 @@ public class ConfigScreen extends Screen {
                 }
                 @Override
                 protected void applyValue() {
-                    builder.ctx.config.setErosionInertia((float)value);
+                    builder.ctx.config.setMainRiverInertia((float)value);
                 }
             }, 2,2, positioner);
             this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Friction " + shortenSliderValue(builder.ctx.config.getMainRiverFriction())), builder.ctx.config.getMainRiverFriction()) {
@@ -302,7 +389,7 @@ public class ConfigScreen extends Screen {
                 }
                 @Override
                 protected void applyValue() {
-                    builder.ctx.config.setEcoSystemScale((float)value);
+                    builder.ctx.config.setMainRiverFriction((float)value);
                 }
             }, 3,2, positioner);
 
@@ -314,7 +401,7 @@ public class ConfigScreen extends Screen {
                 }
                 @Override
                 protected void applyValue() {
-                    builder.ctx.config.setErosionInertia((float)value);
+                    builder.ctx.config.setRiverInertia((float)value);
                 }
             }, 5,2, positioner);
             this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Friction " + shortenSliderValue(builder.ctx.config.getRiverFriction())), builder.ctx.config.getRiverFriction()) {
@@ -324,7 +411,7 @@ public class ConfigScreen extends Screen {
                 }
                 @Override
                 protected void applyValue() {
-                    builder.ctx.config.setEcoSystemScale((float)value);
+                    builder.ctx.config.setRiverFriction((float)value);
                 }
             }, 6,2, positioner);
 
@@ -430,14 +517,11 @@ public class ConfigScreen extends Screen {
             super(Text.of("Disclaimer"));
             GridWidget.Adder adder = this.grid.setRowSpacing(8).createAdder(1);
             Positioner positioner = adder.copyPositioner();
-            adder.add(new TextFieldWidget(textRenderer, width,layout.getContentHeight(),
-                    Text.of(
-                            "Disclaimer: \n" +
-                                    "Settable values exceed safety bounds. \n" +
-                                    "Glitched terrain outside of the default settings are therefore a feature, not a bug. \n" +
-                                    "Have fun!"
-                    )
-            ), positioner);
+            adder.add(new TextWidget(Text.of("Disclaimer:"), textRenderer), positioner);
+            adder.add(new TextWidget(Text.of("Settable values exceed safety bounds."), textRenderer), positioner);
+            adder.add(new TextWidget(Text.of("Glitched terrain outside of the default settings are therefore a feature, not a bug."), textRenderer), positioner);
+            adder.add(new TextWidget(Text.of("Have fun!"), textRenderer), positioner);
+            adder.add(new TextWidget(Text.of("And don't forget to screenshot cool terrain."), textRenderer), positioner);
         }
     }
 

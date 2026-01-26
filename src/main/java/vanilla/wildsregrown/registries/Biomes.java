@@ -6,6 +6,9 @@ import com.sipke.registeries.core.RegistryObject;
 import vanilla.wildsregrown.WRGVanilla;
 import vanilla.wildsregrown.api.biome.IdentifierBiome;
 import vanilla.wildsregrown.api.biome.VanillaBiome;
+import vanilla.wildsregrown.biomes.CoolDesert;
+import vanilla.wildsregrown.biomes.HotDesert;
+import vanilla.wildsregrown.biomes.RedDesert;
 
 import static vanilla.wildsregrown.WRGVanilla.modid;
 
@@ -24,7 +27,9 @@ public class Biomes {
     public static final RegistryObject<Biome> deep_frozen_ocean = WorldRegistries.BIOMES.register(new VanillaBiome("deep_frozen_ocean"));
     public static final RegistryObject<Biome> deep_lukewarm_ocean = WorldRegistries.BIOMES.register(new VanillaBiome("deep_lukewarm_ocean"));
     public static final RegistryObject<Biome> deep_ocean = WorldRegistries.BIOMES.register(new VanillaBiome("deep_ocean"));
-    public static final RegistryObject<Biome> desert = WorldRegistries.BIOMES.register(new VanillaBiome("desert", false));
+    public static final RegistryObject<Biome> hot_desert = WorldRegistries.BIOMES.register(new HotDesert());
+    public static final RegistryObject<Biome> red_desert = WorldRegistries.BIOMES.register(new RedDesert());
+    public static final RegistryObject<Biome> cool_desert = WorldRegistries.BIOMES.register(new CoolDesert());
     public static final RegistryObject<Biome> dripstone_caves = WorldRegistries.BIOMES.register(new VanillaBiome("dripstone_caves"));
     public static final RegistryObject<Biome> eroded_badlands = WorldRegistries.BIOMES.register(new VanillaBiome("eroded_badlands"));
     public static final RegistryObject<Biome> flower_forest = WorldRegistries.BIOMES.register(new VanillaBiome("flower_forest"));

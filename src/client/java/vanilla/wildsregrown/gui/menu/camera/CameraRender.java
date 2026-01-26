@@ -6,6 +6,7 @@ public enum CameraRender {
     height(),
     elevation(),
     temperature(),
+    rainfall(),
     moisture(),
 
     landform(),

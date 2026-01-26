@@ -9,12 +9,10 @@ import com.sipke.core.Seed;
 import com.sipke.noise2d.Noise;
 import vanilla.wildsregrown.registries.Materials;
 
-import static com.sipke.WorldConstants.landformFactor;
-
 public class Plains extends Landform {
 
     public Plains() {
-        super( landformFactor*0.12f, Placement.Elevation.lowland, Climate.tundra, Climate.steppe, Climate.coolDesert, Climate.hotDesert, Climate.coniferousForest, Climate.savanna);
+        super( 0.12f, Placement.Elevation.lowland, Climate.tundra, Climate.steppe, Climate.coolDesert, Climate.hotDesert, Climate.coniferousForest, Climate.savanna);
         register(new StratumConfig(Materials.stone.getKey(), 5, 24, 5));
         register(new StratumConfig(Materials.deepslate.getKey(), 5, 12, 2));
     }

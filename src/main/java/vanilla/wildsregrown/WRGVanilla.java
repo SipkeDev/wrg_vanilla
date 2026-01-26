@@ -12,6 +12,7 @@ import vanilla.wildsregrown.commands.Locate;
 import vanilla.wildsregrown.registries.Biomes;
 import vanilla.wildsregrown.registries.Ecosystems;
 import vanilla.wildsregrown.registries.Landforms;
+import vanilla.wildsregrown.registries.Materials;
 import vanilla.wildsregrown.world.WRGChunkGenerator;
 import vanilla.wildsregrown.world.biomes.WRGBiomeProvider;
 
@@ -30,6 +31,7 @@ public class WRGVanilla implements ModInitializer {
 		// However, some things (like resources) may still be uninitialized.
 		// Proceed with mild caution.
 
+		Materials.init();
 		Landforms.init();
 		Ecosystems.init();
 		Biomes.init();

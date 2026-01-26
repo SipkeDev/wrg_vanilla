@@ -19,6 +19,7 @@ import net.minecraft.registry.entry.RegistryEntryList;
 import net.minecraft.structure.StructureSet;
 import net.minecraft.structure.StructureStart;
 import net.minecraft.structure.StructureTemplateManager;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.ChunkSectionPos;
@@ -41,8 +42,11 @@ import net.minecraft.world.gen.chunk.placement.StructurePlacement;
 import net.minecraft.world.gen.chunk.placement.StructurePlacementCalculator;
 import net.minecraft.world.gen.noise.NoiseConfig;
 import net.minecraft.world.gen.structure.Structure;
+import vanilla.wildsregrown.WRGVanilla;
 import vanilla.wildsregrown.api.IdentifiableRegistery;
+import vanilla.wildsregrown.api.biome.VanillaBiome;
 import vanilla.wildsregrown.api.chunk.SetableSection;
+import vanilla.wildsregrown.registries.Biomes;
 import vanilla.wildsregrown.world.biomes.WRGBiomeProvider;
 import vanilla.wildsregrown.world.decorator.*;
 
@@ -229,23 +233,39 @@ public final class WRGChunkGenerator extends ChunkGenerator {
             for (int i = 0; i < chunkSize; i+=4) {
                 for (int j = 0; j < chunkSize; j+=4) {
 
-                    int idx = i * chunkSize + j;
-
-                    if (WorldRegistries.BIOMES.get(noiseChunk.getTile(idx).biome) instanceof IdentifiableRegistery id) {
-                        RegistryEntry<Biome> entry = provider.getMap().get(id.getIdentifier());
-                        PalettedContainer<RegistryEntry<Biome>> container = chunk.getSection(0).getBiomeContainer().slice();
-                        for (int k = 0; k < 4; k++) {
-                            for (int l = 0; l < 4; l++) {
-                                for (int m = 0; m < 4; m++) {
+                    PalettedContainer<RegistryEntry<Biome>> container = chunk.getSection(0).getBiomeContainer().slice();
+                    PalettedContainer<RegistryEntry<Biome>> cave = chunk.getSection(0).getBiomeContainer().slice();
+                    for (int k = 0; k < 4; k++) {
+                        for (int m = 0; m < 4; m++) {
+                            int idx = (i + k) * chunkSize + (j + m);
+                            if (WorldRegistries.BIOMES.get(noiseChunk.getTile(idx).biome) instanceof IdentifiableRegistery id) {
+                                RegistryEntry<Biome> entry = provider.getMap().get(id.getIdentifier());
+                                for (int l = 0; l < 4; l++) {
                                     container.swapUnsafe(k, l, m, entry);
                                 }
                             }
                         }
-                        for (ChunkSection section0 : chunk.getSectionArray()) {
-                            ((SetableSection)section0).wrg_vanilla$set(container);
-                        }
-
                     }
+                    Identifier caveIdentifier = noiseChunk.getTile((i + 1) * chunkSize + (j + 1)).flow > 0.5 ? ((VanillaBiome) Biomes.lush_caves.getInstance()).getIdentifier() : ((VanillaBiome) Biomes.dripstone_caves.getInstance()).getIdentifier();
+                    RegistryEntry<Biome> entry = provider.getMap().get(caveIdentifier);
+                    for (int k = 0; k < 4; k++) {
+                        for (int m = 0; m < 4; m++) {
+                            for (int l = 0; l < 4; l++) {
+                                cave.swapUnsafe(k, l, m, entry);
+                            }
+                        }
+                    }
+                    for (ChunkSection section0 : chunk.getSectionArray()) {
+                        ((SetableSection) section0).wrg_vanilla$set(cave);
+                    }
+                    int height = (int) noiseChunk.getTile((i + 1) * chunkSize + (j + 1)).height;
+                    int index = chunk.getSectionIndex(height);
+                    if (index < 1 || index > 64) {
+                        index = 1;
+                    }
+                    ((SetableSection) chunk.getSection(index)).wrg_vanilla$set(container);
+                    ((SetableSection) chunk.getSection(index - 1)).wrg_vanilla$set(container);
+                    ((SetableSection) chunk.getSection(index - 2)).wrg_vanilla$set(container);
                 }
             }
         }
@@ -253,7 +273,7 @@ public final class WRGChunkGenerator extends ChunkGenerator {
 
     @Override
     public int getSeaLevel() {
-        return WorldConstants.sea;
+        return (int) getWorld().getConfig().waterLevel();
     }
 
     @Override

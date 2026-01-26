@@ -65,7 +65,7 @@ public class GridCamera extends Camera<WorldGrid> implements Drawable, IRenderTy
                     case temperature -> {
                         setPixel(x, y, Color.HSBtoRGB(0f, 0f, grid.getPos(dx, dy).getTemperature()));
                     }
-                    case moisture -> {
+                    case rainfall -> {
                         float m = grid.getPos(dx, dy).getMoisture();
                         if (m >= 0.95f){
                             setPixel(x, y, Colors.pastelRed);

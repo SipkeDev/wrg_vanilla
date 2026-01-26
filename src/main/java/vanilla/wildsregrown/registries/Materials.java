@@ -4,8 +4,20 @@ import com.sipke.api.geology.GeoMaterial;
 import com.sipke.registeries.WorldRegistries;
 import com.sipke.registeries.core.RegistryObject;
 import net.minecraft.block.Blocks;
+import vanilla.wildsregrown.WRGVanilla;
 import vanilla.wildsregrown.api.materials.VanillaMaterial;
 
+/**
+ * ##CONFIG
+ * #name
+ * #Density (transfer rate + intertia)
+ * #friction
+ * #thalusAngle
+ * ##TRANSFORMERS
+ * #weathers   (Surface)
+ * #collapses  (Thermal)
+ * #transports (Hydraulic)
+ */
 public class Materials {
 
     //Soils
@@ -34,6 +46,27 @@ public class Materials {
 
     public static final RegistryObject<GeoMaterial> cobble_deepslate = WorldRegistries.MATERIALS.register(new VanillaMaterial(Blocks.COBBLED_DEEPSLATE.getTranslationKey(),0.5f, 0.5f, 5, dirt.getKey(),c(),c()));
     public static final RegistryObject<GeoMaterial> deepslate = WorldRegistries.MATERIALS.register(new VanillaMaterial(Blocks.DEEPSLATE.getTranslationKey(), 0.5f, 0.5f, 5, dirt.getKey(), cobble_deepslate.getKey(),c()));
+
+    static {
+        WorldRegistries.MATERIALS.tagSoil(sand);
+        WorldRegistries.MATERIALS.tagSoil(red_sand);
+        WorldRegistries.MATERIALS.tagSoil(dirt);
+        WorldRegistries.MATERIALS.tagSoil(coarse_dirt);
+        WorldRegistries.MATERIALS.tagSoil(podzol);
+
+        WorldRegistries.MATERIALS.tagGravel(gravel);
+
+        WorldRegistries.MATERIALS.tagSoluable(stone);
+        WorldRegistries.MATERIALS.tagSoluable(red_sandstone);
+        WorldRegistries.MATERIALS.tagSoluable(sandstone);
+        WorldRegistries.MATERIALS.tagSoluable(tuff);
+        WorldRegistries.MATERIALS.tagSoluable(calcite);
+    }
+
+    public static void init(){
+        WorldRegistries.MATERIALS.bootstrap();
+        WRGVanilla.LOGGER.info("loaded Materials");
+    }
 
     //current idx
     public static int c(){

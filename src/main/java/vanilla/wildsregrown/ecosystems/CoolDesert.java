@@ -8,8 +8,9 @@ import vanilla.wildsregrown.registries.Biomes;
 public class CoolDesert extends Ecosystem {
 
     public CoolDesert() {
-        super(Climate.coolDesert, Biomes.desert);
-        register(Placement.Biome.normal, Biomes.windswept_savanna);
+        super(Climate.coolDesert, Biomes.cool_desert);
+        register(Placement.Biome.normal, Biomes.hot_desert);
+        register(Placement.Biome.dry, Biomes.red_desert);
     }
 
 }

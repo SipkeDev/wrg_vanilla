@@ -2,6 +2,7 @@ package vanilla.wildsregrown.gui.menu.builder;
 
 import com.sipke.builder.WorldBuilder;
 import com.sipke.math.MathUtil;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -28,7 +29,7 @@ public class WorldTypeScreen extends Screen {
         super(Text.literal("world_type"));
         this.builder = builder;
         this.parent = parent;
-        this.camera = new WorldTypeCamera(MathUtil.min(parent.width, parent.height));
+        this.camera = new WorldTypeCamera(MathUtil.min(client.getWindow().getScaledWidth(), client.getWindow().getScaledHeight()));
         this.camera.setRender(CameraRender.climate);
         this.camera.takeShot(builder.ctx);
     }

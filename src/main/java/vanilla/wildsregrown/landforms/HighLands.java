@@ -12,12 +12,10 @@ import com.sipke.noise2d.Noise;
 import com.sipke.noise2d.warp.GradientWarp;
 import vanilla.wildsregrown.registries.Materials;
 
-import static com.sipke.WorldConstants.landformFactor;
-
 public class HighLands extends Landform {
 
     public HighLands() {
-        super(landformFactor/2f, Placement.Elevation.highland, Climate.tundra, Climate.steppe, Climate.polarDesert);
+        super(0.5f, Placement.Elevation.highland, Climate.tundra, Climate.steppe, Climate.polarDesert);
         register(new StratumConfig(Materials.stone.getKey(), 24, 50, 5));
         register(new StratumConfig(Materials.tuff.getKey(), 3, 5, 2));
         register(new StratumConfig(Materials.deepslate.getKey(), 12, 24, 2));
