@@ -4,13 +4,12 @@ import com.sipke.api.terrain.Biome;
 import com.sipke.registeries.WorldRegistries;
 import com.sipke.registeries.core.RegistryObject;
 import vanilla.wildsregrown.WRGVanilla;
-import vanilla.wildsregrown.api.biome.IdentifierBiome;
 import vanilla.wildsregrown.api.biome.VanillaBiome;
-import vanilla.wildsregrown.biomes.CoolDesert;
-import vanilla.wildsregrown.biomes.HotDesert;
-import vanilla.wildsregrown.biomes.RedDesert;
-
-import static vanilla.wildsregrown.WRGVanilla.modid;
+import vanilla.wildsregrown.registries.biomes.*;
+import vanilla.wildsregrown.registries.biomes.meadow.BlueMeadow;
+import vanilla.wildsregrown.registries.biomes.meadow.RedMeadow;
+import vanilla.wildsregrown.registries.biomes.plains.*;
+import vanilla.wildsregrown.registries.biomes.savanna.*;
 
 public class Biomes {
 
@@ -27,9 +26,11 @@ public class Biomes {
     public static final RegistryObject<Biome> deep_frozen_ocean = WorldRegistries.BIOMES.register(new VanillaBiome("deep_frozen_ocean"));
     public static final RegistryObject<Biome> deep_lukewarm_ocean = WorldRegistries.BIOMES.register(new VanillaBiome("deep_lukewarm_ocean"));
     public static final RegistryObject<Biome> deep_ocean = WorldRegistries.BIOMES.register(new VanillaBiome("deep_ocean"));
+
     public static final RegistryObject<Biome> hot_desert = WorldRegistries.BIOMES.register(new HotDesert());
     public static final RegistryObject<Biome> red_desert = WorldRegistries.BIOMES.register(new RedDesert());
     public static final RegistryObject<Biome> cool_desert = WorldRegistries.BIOMES.register(new CoolDesert());
+
     public static final RegistryObject<Biome> dripstone_caves = WorldRegistries.BIOMES.register(new VanillaBiome("dripstone_caves"));
     public static final RegistryObject<Biome> eroded_badlands = WorldRegistries.BIOMES.register(new VanillaBiome("eroded_badlands"));
     public static final RegistryObject<Biome> flower_forest = WorldRegistries.BIOMES.register(new VanillaBiome("flower_forest"));
@@ -51,10 +52,7 @@ public class Biomes {
     public static final RegistryObject<Biome> old_growth_pine_taiga = WorldRegistries.BIOMES.register(new VanillaBiome("old_growth_pine_taiga"));
     public static final RegistryObject<Biome> old_growth_spruce_taiga = WorldRegistries.BIOMES.register(new VanillaBiome("old_growth_spruce_taiga"));
     public static final RegistryObject<Biome> pale_garden = WorldRegistries.BIOMES.register(new VanillaBiome("pale_garden"));
-    public static final RegistryObject<Biome> plains = WorldRegistries.BIOMES.register(new VanillaBiome("plains"));
     public static final RegistryObject<Biome> river = WorldRegistries.BIOMES.register(new VanillaBiome("river"));
-    public static final RegistryObject<Biome> savanna = WorldRegistries.BIOMES.register(new VanillaBiome("savanna"));
-    public static final RegistryObject<Biome> savanna_plateau = WorldRegistries.BIOMES.register(new VanillaBiome("savanna_plateau"));
     public static final RegistryObject<Biome> snowy_beach = WorldRegistries.BIOMES.register(new VanillaBiome("snowy_beach"));
     public static final RegistryObject<Biome> snowy_plains = WorldRegistries.BIOMES.register(new VanillaBiome("snowy_plains"));
     public static final RegistryObject<Biome> snowy_slopes = WorldRegistries.BIOMES.register(new VanillaBiome("snowy_slopes"));
@@ -63,7 +61,7 @@ public class Biomes {
     public static final RegistryObject<Biome> stony_peaks = WorldRegistries.BIOMES.register(new VanillaBiome("stony_peaks"));
     public static final RegistryObject<Biome> stony_shore = WorldRegistries.BIOMES.register(new VanillaBiome("stony_shore"));
     public static final RegistryObject<Biome> sunflower_plains = WorldRegistries.BIOMES.register(new VanillaBiome("sunflower_plains"));
-    public static final RegistryObject<Biome> swamp = WorldRegistries.BIOMES.register(new VanillaBiome("swamp"));
+    public static final RegistryObject<Biome> swamp = WorldRegistries.BIOMES.register(new Swamp());
     public static final RegistryObject<Biome> taiga = WorldRegistries.BIOMES.register(new VanillaBiome("taiga"));
     public static final RegistryObject<Biome> warm_ocean = WorldRegistries.BIOMES.register(new VanillaBiome("warm_ocean"));
     public static final RegistryObject<Biome> warped_forest = WorldRegistries.BIOMES.register(new VanillaBiome("warped_forest"));
@@ -72,6 +70,44 @@ public class Biomes {
     public static final RegistryObject<Biome> windswept_hills = WorldRegistries.BIOMES.register(new VanillaBiome("windswept_hills"));
     public static final RegistryObject<Biome> windswept_savanna = WorldRegistries.BIOMES.register(new VanillaBiome("windswept_savanna"));
     public static final RegistryObject<Biome> wooded_badlands = WorldRegistries.BIOMES.register(new VanillaBiome("wooded_badlands"));
+
+    /**
+     * Custom WRG powered biomes
+     */
+    //swamps
+    public static final RegistryObject<Biome> peat_swamp = WorldRegistries.BIOMES.register(new PeatSwamp());
+
+    //plains
+    public static final RegistryObject<Biome> blue_flower_plains = WorldRegistries.BIOMES.register(new BlueFlowerPlains());
+    public static final RegistryObject<Biome> red_flower_plains = WorldRegistries.BIOMES.register(new RedFlowerPlains());
+    public static final RegistryObject<Biome> pink_flower_plains = WorldRegistries.BIOMES.register(new PinkFlowerPlains());
+    public static final RegistryObject<Biome> white_flower_plains = WorldRegistries.BIOMES.register(new WhiteFlowerPlains());
+    public static final RegistryObject<Biome> dense_plains = WorldRegistries.BIOMES.register(new DensePlains());
+    public static final RegistryObject<Biome> tall_dense_plains = WorldRegistries.BIOMES.register(new TallDensePlains());
+    public static final RegistryObject<Biome> dry_plains = WorldRegistries.BIOMES.register(new DryPlains());
+    public static final RegistryObject<Biome> plains = WorldRegistries.BIOMES.register(new Plains());
+    public static final RegistryObject<Biome> sparse_plains = WorldRegistries.BIOMES.register(new SparsePlains());
+    public static final RegistryObject<Biome> tall_plains = WorldRegistries.BIOMES.register(new TallPlains());
+    public static final RegistryObject<Biome> wet_plains_0 = WorldRegistries.BIOMES.register(new WetPlains());
+    public static final RegistryObject<Biome> wet_plains_1 = WorldRegistries.BIOMES.register(new WetPlains2());
+    public static final RegistryObject<Biome> wet_plains_2 = WorldRegistries.BIOMES.register(new WetPlains3());
+
+    //savanna
+    public static final RegistryObject<Biome> dense_savanna = WorldRegistries.BIOMES.register(new DenseSavanna());
+    public static final RegistryObject<Biome> dry_savanna = WorldRegistries.BIOMES.register(new DrySavanna());
+    public static final RegistryObject<Biome> savanna = WorldRegistries.BIOMES.register(new Savanna());
+    public static final RegistryObject<Biome> savanna_ferns = WorldRegistries.BIOMES.register(new SavannaFerns());
+    public static final RegistryObject<Biome> savanna_flowers = WorldRegistries.BIOMES.register(new SavannaFlowers());
+    public static final RegistryObject<Biome> sparse_savanna = WorldRegistries.BIOMES.register(new SparseSavanna());
+    public static final RegistryObject<Biome> wet_savanna = WorldRegistries.BIOMES.register(new WetSavanna());
+
+    //meadow
+    public static final RegistryObject<Biome> blue_meadow = WorldRegistries.BIOMES.register(new BlueMeadow());
+    public static final RegistryObject<Biome> red_meadow = WorldRegistries.BIOMES.register(new RedMeadow());
+
+    //misc
+    public static final RegistryObject<Biome> farmland = WorldRegistries.BIOMES.register(new FarmLand());
+    public static final RegistryObject<Biome> abandoned_farmland = WorldRegistries.BIOMES.register(new AbandonedFarmLand());
 
     public static void init(){
         WorldRegistries.BIOMES.bootstrap();

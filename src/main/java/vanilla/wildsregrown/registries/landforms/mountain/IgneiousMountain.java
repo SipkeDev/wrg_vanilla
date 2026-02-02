@@ -1,0 +1,45 @@
+package vanilla.wildsregrown.registries.landforms.mountain;
+
+import com.sipke.Constant;
+import com.sipke.NoiseGenerator;
+import com.sipke.api.categorization.Climate;
+import com.sipke.api.categorization.Placement;
+import com.sipke.api.geology.StratumConfig;
+import com.sipke.api.terrain.Landform;
+import com.sipke.core.Seed;
+import com.sipke.math.MapType;
+import com.sipke.noise2d.Noise;
+import vanilla.wildsregrown.registries.Materials;
+
+public class IgneiousMountain extends Landform {
+
+    public IgneiousMountain() {
+        super(0.8f, Placement.Elevation.mountain, Climate.chaparral, Climate.coniferousForest, Climate.polarDesert, Climate.tundra, Climate.hotScrubland, Climate.coolScrubland, Climate.mixedForest, Climate.coniferousForest, Climate.steppe);
+        register(new StratumConfig(Materials.stone.getKey(), 12, 34, 3));
+        register(new StratumConfig(Materials.granite.getKey(), 12, 24, 2));
+        register(new StratumConfig(Materials.andesite.getKey(), 8, 18, 1));
+        register(new StratumConfig(Materials.diorite.getKey(), 2, 12, 1));
+    }
+
+    @Override
+    public Noise elevation(Seed seed, float edge, float value) {
+
+        seed.reset();
+
+        Noise erosion = NoiseGenerator.perlin(seed.next(), 384)
+                .pingpong(3, 2.25f, 0.5f, 0.5f, 2)
+                .multiply(0.12f);
+
+        return NoiseGenerator.cubic(seed.next(), 1200)
+                .fbm(5)
+                .subtract(erosion)
+                .multiply(Constant.of(edge).map(MapType.hermite, 0.002f, 0.88f).clamp(0.3f, 1f))
+                .add(NoiseGenerator.perlin(seed.next(), 384).fbm(3).multiply(0.025f));
+    }
+
+    @Override
+    public Noise depthNoise(int iteration) {
+        return NoiseGenerator.perlin(iteration, 128);
+    }
+
+}

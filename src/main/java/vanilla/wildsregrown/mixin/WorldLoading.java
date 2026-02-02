@@ -10,13 +10,13 @@ import net.minecraft.world.dimension.DimensionOptions;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.level.ServerWorldProperties;
 import net.minecraft.world.level.storage.LevelStorage;
+import net.minecraft.world.spawner.SpecialSpawner;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import vanilla.wildsregrown.WRGVanilla;
 import vanilla.wildsregrown.world.WRGChunkGenerator;
-import vanilla.wildsregrown.world.biomes.WRGBiomeProvider;
 
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -25,16 +25,16 @@ import java.util.concurrent.Executor;
 public class WorldLoading {
 
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;syncChunkWrites()Z"), method = "<init>")
-    public void getFolder(MinecraftServer server, Executor workerExecutor, LevelStorage.Session session, ServerWorldProperties properties, RegistryKey worldKey, DimensionOptions dimensionOptions, boolean debugWorld, long seed, List spawners, boolean shouldTickTime, RandomSequencesState randomSequenceState, CallbackInfo ci) {
+    public void getFolder(MinecraftServer server, Executor workerExecutor, LevelStorage.Session session, ServerWorldProperties properties, RegistryKey<net.minecraft.world.World> worldKey, DimensionOptions dimensionOptions, boolean debugWorld, long seed, List<SpecialSpawner> spawners, boolean shouldTickTime, RandomSequencesState randomSequenceState, CallbackInfo ci) {
         ChunkGenerator chunkGenerator = dimensionOptions.chunkGenerator();
         if (chunkGenerator instanceof WRGChunkGenerator chunk) {
             WRGVanilla.LOGGER.info("World name: " + session.getWorldDirectory(worldKey).getFileName().toString());
             if (server.isDedicated()) {
                 WRGVanilla.LOGGER.info("Server path: " + server.getPath("world"));
                 WRGVanilla.LOGGER.info("Session path: " + session.getWorldDirectory(worldKey));
-                World.instance.load(server.getPath("world"));
+                World.getInstance().load(server.getPath("world"));
             } else {
-                World.instance.load(session.getWorldDirectory(worldKey));
+                World.getInstance().load(session.getWorldDirectory(worldKey));
             }
         }
 

@@ -14,7 +14,7 @@ public enum MapSelector implements StringIdentifiable {
     linear(0, "linear", MapType.linear),
     hermite(1, "hermite", MapType.hermite),
     inverseHermite(2, "inverseHermite", MapType.inverseHermite),
-    chebyquinticshev(3, "quintic", MapType.quintic),
+    quintic(3, "quintic", MapType.quintic),
     inverseQuintic(4, "inverseQuintic", MapType.inverseQuintic),
     almostUnitIdentity(5, "almostUnitIdentity", MapType.almostUnitIdentity);
 

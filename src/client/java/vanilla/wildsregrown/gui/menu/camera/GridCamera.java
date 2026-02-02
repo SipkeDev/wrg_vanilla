@@ -5,6 +5,7 @@ import com.sipke.api.PosTranslator;
 import com.sipke.api.cell.BiomeCell;
 import com.sipke.api.cell.Cell;
 import com.sipke.api.cell.EcoSystemCell;
+import com.sipke.api.cell.LandFormCell;
 import com.sipke.api.features.Colors;
 import com.sipke.api.features.structures.StructureSpawn;
 import com.sipke.api.grid.WorldGrid;
@@ -52,7 +53,7 @@ public class GridCamera extends Camera<WorldGrid> implements Drawable, IRenderTy
                 switch (cameraRender){
 
                     case climate -> {
-                        TileCell tileCell = getPos(grid.getEcosystems(), dx, dy);
+                        TileCell<EcoSystemCell> tileCell = getPos(grid.getEcosystems(), dx, dy);
                         Ecosystem ecosystem = WorldRegistries.ECOSYSTEMS.get(tileCell.getCell().getConfig());
                         setPixel(x, y, ecosystem.getClimate().getRgb());
                     }
@@ -78,16 +79,16 @@ public class GridCamera extends Camera<WorldGrid> implements Drawable, IRenderTy
                         }
                     }
                     case landform -> {
-                        TileCell tileCell = getPos(grid.getLandforms(), dx, dy);
+                        TileCell<LandFormCell> tileCell = getPos(grid.getLandforms(), dx, dy);
                         Landform landform = WorldRegistries.LANDFORMS.get(tileCell.getCell().getConfig());
                         setPixel(x, y, landform.elevation.rgb);
                     }
                     case landform_edge -> {
-                        TileCell tileCell = getPos(grid.getLandforms(), dx, dy);
+                        TileCell<LandFormCell> tileCell = getPos(grid.getLandforms(), dx, dy);
                         setPixel(x, y, Color.HSBtoRGB(0f, 0f, tileCell.getEdge()));
                     }
                     case ecosystem_edge -> {
-                        TileCell tileCell = getPos(grid.getEcosystems(), dx, dy);
+                        TileCell<EcoSystemCell> tileCell = getPos(grid.getEcosystems(), dx, dy);
                         setPixel(x, y, Color.HSBtoRGB(0f, 0f, tileCell.getEdge()));
                     }
 
@@ -147,11 +148,8 @@ public class GridCamera extends Camera<WorldGrid> implements Drawable, IRenderTy
         for (EcoSystemCell ecoSystemCell : grid.getEcosystems()){
             for (BiomeCell biomeCell : ecoSystemCell.getBiomes()){
                 for (StructureSpawn spawn : biomeCell.getStructures()){
-
-                    float x = PosTranslator.globalToGrid(spawn.getX(), grid.getSize());
-                    float z = PosTranslator.globalToGrid(spawn.getZ(), grid.getSize());
-                    int dx = translateOverlay(x);
-                    int dy = translateOverlay(z);
+                    int dx = translateOverlay(spawn.getX());
+                    int dy = translateOverlay(spawn.getZ());
                     setPixel(dx, dy, Colors.darkPastelRed);
                 }
             }
@@ -173,7 +171,7 @@ public class GridCamera extends Camera<WorldGrid> implements Drawable, IRenderTy
         context.state.addSimpleElement(new RenderWorldMap(RenderPipelines.GUI, TextureSetup.empty(), context.getMatrices(), this.getImage(), size, res, this.getX(), this.getY(), null));
     }
 
-    private <T extends Cell> TileCell getPos(ArrayList<T> cells, float x, float z){
+    private <T extends Cell> TileCell<T> getPos(ArrayList<T> cells, float x, float z){
 
         float dist0 = Float.MAX_VALUE;
         float dist1 = Float.MAX_VALUE;

@@ -13,7 +13,8 @@ public class StructureMixin {
     @Inject(at = @At(value = "HEAD"), method = "Lnet/minecraft/world/gen/structure/Structure;isBiomeValid(Lnet/minecraft/world/gen/structure/Structure$StructurePosition;Lnet/minecraft/world/gen/structure/Structure$Context;)Z", cancellable = true)
     private static void isBiomeValid(Structure.StructurePosition result, Structure.Context context, CallbackInfoReturnable<Boolean> cir) {
         BlockPos blockPos = result.position();
-        cir.setReturnValue(context.biomePredicate().test(context.chunkGenerator().getBiomeSource().getBiome(blockPos.getX(), blockPos.getY(), blockPos.getZ(), null)));
+        //cir.setReturnValue(context.biomePredicate().test(context.chunkGenerator().getBiomeSource().getBiome(blockPos.getX(), blockPos.getY(), blockPos.getZ(), null)));
+        cir.setReturnValue(true);
     }
 
 }

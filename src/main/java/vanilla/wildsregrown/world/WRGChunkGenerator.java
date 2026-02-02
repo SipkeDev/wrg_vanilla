@@ -5,17 +5,20 @@ import com.google.common.base.Suppliers;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.sipke.World;
-import com.sipke.WorldConstants;
+import com.sipke.api.features.structures.StructureSpawn;
+import com.sipke.api.geology.Stratum;
+import com.sipke.api.grid.WRGConfig;
+import com.sipke.generator.context.LocalAreaContext;
+import com.sipke.math.MathUtil;
 import com.sipke.registeries.WorldRegistries;
 import net.minecraft.SharedConstants;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.*;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.entry.RegistryEntryList;
+import net.minecraft.structure.StructurePiece;
 import net.minecraft.structure.StructureSet;
 import net.minecraft.structure.StructureStart;
 import net.minecraft.structure.StructureTemplateManager;
@@ -70,6 +73,8 @@ public final class WRGChunkGenerator extends ChunkGenerator {
     private final RegistryEntry<ChunkGeneratorSettings> settings;
     private final BaseDecorator decorator;
     private final BedrockDecorator bedrockDecorator;
+    private final FeatureDecorator featureDecorator;
+    private final FloraDecorator floraDecorator;
     private final Supplier<AquiferSampler.FluidLevelSampler> fluidLevelSampler;
 
     public WRGChunkGenerator(BiomeSource source, RegistryEntry<ChunkGeneratorSettings> settings) {
@@ -77,73 +82,94 @@ public final class WRGChunkGenerator extends ChunkGenerator {
         this.settings = settings;
         this.decorator = new BaseDecorator(this);
         this.bedrockDecorator = new BedrockDecorator();
+        this.featureDecorator = new FeatureDecorator(this);
+        this.floraDecorator = new FloraDecorator(this);
         this.fluidLevelSampler = Suppliers.memoize(() -> createFluidLevelSampler(settings.value()));
     }
 
     @Override
+    public void generateFeatures(StructureWorldAccess world, Chunk chunk, StructureAccessor structureAccessor) {
+        featureDecorator.apply(world, chunk);
+        floraDecorator.apply(world, chunk);
+        super.generateFeatures(world, chunk, structureAccessor);
+    }
+
+        @Override
     public void setStructureStarts(DynamicRegistryManager registryManager, StructurePlacementCalculator placementCalculator, StructureAccessor structureAccessor, Chunk chunk, StructureTemplateManager structureTemplateManager, RegistryKey<net.minecraft.world.World> dimension) {
         //super.setStructureStarts(registryManager, placementCalculator, structureAccessor, chunk, structureTemplateManager, dimension);
         if (!SharedConstants.DISABLE_STRUCTURES) {
+
+            //Positions
             ChunkPos chunkPos = chunk.getPos();
             ChunkSectionPos chunkSectionPos = ChunkSectionPos.from(chunk);
-            NoiseConfig noiseConfig = placementCalculator.getNoiseConfig();
-            placementCalculator.getStructureSets().forEach((structureSet) -> {
-                StructurePlacement structurePlacement = (structureSet.value()).placement();
-                List<StructureSet.WeightedEntry> list = (structureSet.value()).structures();
 
-                //WRGVanilla.LOGGER.info("MARK 1");
-                for(StructureSet.WeightedEntry weightedEntry : list) {
+            com.sipke.api.chunk.Chunk noiseChunk = getWorld().generator.getNoiseChunk(chunkPos.getStartX(), chunkPos.getStartZ());
+            if (noiseChunk.hasSpawnRef()) {
+                WRGVanilla.LOGGER.info("pos: " + chunkPos);
+                for (StructureSpawn spawn : noiseChunk.getSpawnRefs()) {
+                    WRGVanilla.LOGGER.info("spawn: " + spawn.getIdentifier());
 
-                    //WRGVanilla.LOGGER.info("MARK : " + weightedEntry);
-                    StructureStart structureStart = structureAccessor.getStructureStart(chunkSectionPos, weightedEntry.structure().value(), chunk);
-                    if (structureStart != null && structureStart.hasChildren()) {
-                        return;
-                    }
-                }
+                    for (StructureSet entry : registryManager.getOrThrow(RegistryKeys.STRUCTURE_SET)) {
+                        RegistryEntry<Structure> ref = entry.structures().getFirst().structure();
+                        if (ref.getIdAsString().contains(spawn.getStructure().name)) {
 
-                //WRGVanilla.LOGGER.info("MARK 2");
-                if (structurePlacement.shouldGenerate(placementCalculator, chunkPos.x, chunkPos.z)) {
-                    if (list.size() == 1) {
-                        //WRGVanilla.LOGGER.info("MARK 3");
-                        this.trySetStructureStart(list.getFirst(), structureAccessor, registryManager, noiseConfig, structureTemplateManager, placementCalculator.getStructureSeed(), chunk, chunkPos, chunkSectionPos, dimension);
-                    } else {
+                            WRGVanilla.LOGGER.info("entry:" + ref.getIdAsString());
+                            List<StructureSet.WeightedEntry> list = entry.structures();
 
-                        //WRGVanilla.LOGGER.info("MARK 4");
-                        ArrayList<StructureSet.WeightedEntry> arrayList = new ArrayList(list.size());
-                        arrayList.addAll(list);
-                        ChunkRandom chunkRandom = new ChunkRandom(new CheckedRandom(0L));
-                        chunkRandom.setCarverSeed(placementCalculator.getStructureSeed(), chunkPos.x, chunkPos.z);
-                        int i = 0;
+                            //Check if position is already taken
+                            for (StructureSet.WeightedEntry weightedEntry : list) {
+                                StructureStart structureStart = structureAccessor.getStructureStart(chunkSectionPos, weightedEntry.structure().value(), chunk);
+                                if (structureStart != null && structureStart.hasChildren()) {
+                                    return;
+                                }
+                            }
 
-                        for(StructureSet.WeightedEntry weightedEntry2 : arrayList) {
-                            i += weightedEntry2.weight();
-                        }
+                            if (list.size() == 1) {
+                                //Single structure
+                                this.trySetStructureStart(entry.structures().getFirst(), structureAccessor, registryManager, placementCalculator.getNoiseConfig(), structureTemplateManager, placementCalculator.getStructureSeed(), chunk, chunkPos, chunkSectionPos, dimension);
+                                WRGVanilla.LOGGER.info("mark:" + entry);
+                            } else {
+                                //Multi struct
+                                WRGVanilla.LOGGER.info("IMPLEMENT JIGSAW STRUCT");
+                                ArrayList<StructureSet.WeightedEntry> arrayList = new ArrayList<>(list);
+                                ChunkRandom chunkRandom = new ChunkRandom(new CheckedRandom(0L));
+                                chunkRandom.setCarverSeed(placementCalculator.getStructureSeed(), chunkPos.x, chunkPos.z);
 
-                        while(!arrayList.isEmpty()) {
-                            int j = chunkRandom.nextInt(i);
-                            int k = 0;
-
-                            for(StructureSet.WeightedEntry weightedEntry3 : arrayList) {
-                                j -= weightedEntry3.weight();
-                                if (j < 0) {
-                                    break;
+                                //Set base value?
+                                int i = 0;
+                                for (StructureSet.WeightedEntry weightedEntry2 : arrayList) {
+                                    i += weightedEntry2.weight();
                                 }
 
-                                ++k;
-                            }
+                                while (!arrayList.isEmpty()) {
 
-                            StructureSet.WeightedEntry weightedEntry4 = (StructureSet.WeightedEntry)arrayList.get(k);
-                            if (this.trySetStructureStart(weightedEntry4, structureAccessor, registryManager, noiseConfig, structureTemplateManager, placementCalculator.getStructureSeed(), chunk, chunkPos, chunkSectionPos, dimension)) {
-                                return;
-                            }
+                                    //Shuffle the values?
+                                    int j = chunkRandom.nextInt(i);
+                                    int k = 0;
+                                    for (StructureSet.WeightedEntry weightedEntry3 : arrayList) {
+                                        j -= weightedEntry3.weight();
+                                        if (j < 0) {
+                                            break;
+                                        }
+                                        ++k;
+                                    }
 
-                            arrayList.remove(k);
-                            i -= weightedEntry4.weight();
+                                    StructureSet.WeightedEntry weightedEntry4 = arrayList.get(k);
+                                    if (this.trySetStructureStart(weightedEntry4, structureAccessor, registryManager, placementCalculator.getNoiseConfig(), structureTemplateManager, placementCalculator.getStructureSeed(), chunk, chunkPos, chunkSectionPos, dimension)) {
+                                        return;
+                                    }
+
+                                    arrayList.remove(k);
+                                    i -= weightedEntry4.weight();
+                                }
+                            }
+                        }else {
+                            WRGVanilla.LOGGER.info("SkIPPED: " + entry.structures().getFirst().structure().getIdAsString() + " / " + spawn.getStructure().name);
                         }
 
                     }
                 }
-            });
+            }
         }
     }
 
@@ -174,11 +200,6 @@ public final class WRGChunkGenerator extends ChunkGenerator {
     }
 
     @Override
-    public void generateFeatures(StructureWorldAccess world, Chunk chunk, StructureAccessor structureAccessor) {
-        super.generateFeatures(world, chunk, structureAccessor);
-    }
-
-        @Override
     protected MapCodec<? extends ChunkGenerator> getCodec() {
         return CODEC;
     }
@@ -209,20 +230,19 @@ public final class WRGChunkGenerator extends ChunkGenerator {
 
     @Override
     public int getWorldHeight() {
-        return WorldConstants.worldHeight;
+        WRGConfig config = getWorld().getConfig();
+        return (int)(config.continentFactor() + config.landformFactor() + config.biomeFactor()) + 1;
     }
 
     @Override
     public CompletableFuture<Chunk> populateNoise(Blender blender, NoiseConfig noiseConfig, StructureAccessor structureAccessor, Chunk chunk) {
-
-        populate(chunk);
-
+        populateBiomes(chunk);
         decorator.apply(chunk);
         bedrockDecorator.apply(chunk);
         return CompletableFuture.completedFuture(chunk);
     }
 
-    public void populate(Chunk chunk){
+    public void populateBiomes(Chunk chunk) {
         ChunkPos chunkPos = chunk.getPos();
         int x = chunkPos.getStartX();//BiomeCoords.fromBlock(chunkPos.getStartX());
         int z = chunkPos.getStartZ();//BiomeCoords.fromBlock(chunkPos.getStartZ());
@@ -230,43 +250,48 @@ public final class WRGChunkGenerator extends ChunkGenerator {
         com.sipke.api.chunk.Chunk noiseChunk = getWorld().generator.getNoiseChunk(x, z);
 
         if (biomeSource instanceof WRGBiomeProvider provider) {
-            for (int i = 0; i < chunkSize; i+=4) {
-                for (int j = 0; j < chunkSize; j+=4) {
-
-                    PalettedContainer<RegistryEntry<Biome>> container = chunk.getSection(0).getBiomeContainer().slice();
-                    PalettedContainer<RegistryEntry<Biome>> cave = chunk.getSection(0).getBiomeContainer().slice();
-                    for (int k = 0; k < 4; k++) {
-                        for (int m = 0; m < 4; m++) {
-                            int idx = (i + k) * chunkSize + (j + m);
-                            if (WorldRegistries.BIOMES.get(noiseChunk.getTile(idx).biome) instanceof IdentifiableRegistery id) {
-                                RegistryEntry<Biome> entry = provider.getMap().get(id.getIdentifier());
-                                for (int l = 0; l < 4; l++) {
-                                    container.swapUnsafe(k, l, m, entry);
-                                }
-                            }
+            int center = 8*chunkSize+8;
+            PalettedContainer<RegistryEntry<Biome>> container = chunk.getSection(0).getBiomeContainer().slice();
+            PalettedContainer<RegistryEntry<Biome>> cave = chunk.getSection(0).getBiomeContainer().slice();
+            for (int k = 0; k < 4; k++) {
+                for (int m = 0; m < 4; m++) {
+                    int idx = (k*4) * chunkSize + (m*4);
+                    if (WorldRegistries.BIOMES.get(noiseChunk.getTile(idx).biome) instanceof IdentifiableRegistery id) {
+                        RegistryEntry<Biome> entry = provider.getMap().get(id.getIdentifier());
+                        for (int l = 0; l < 4; l++) {
+                            container.swapUnsafe(k, l, m, entry);
                         }
                     }
-                    Identifier caveIdentifier = noiseChunk.getTile((i + 1) * chunkSize + (j + 1)).flow > 0.5 ? ((VanillaBiome) Biomes.lush_caves.getInstance()).getIdentifier() : ((VanillaBiome) Biomes.dripstone_caves.getInstance()).getIdentifier();
-                    RegistryEntry<Biome> entry = provider.getMap().get(caveIdentifier);
-                    for (int k = 0; k < 4; k++) {
-                        for (int m = 0; m < 4; m++) {
-                            for (int l = 0; l < 4; l++) {
-                                cave.swapUnsafe(k, l, m, entry);
-                            }
-                        }
-                    }
-                    for (ChunkSection section0 : chunk.getSectionArray()) {
-                        ((SetableSection) section0).wrg_vanilla$set(cave);
-                    }
-                    int height = (int) noiseChunk.getTile((i + 1) * chunkSize + (j + 1)).height;
-                    int index = chunk.getSectionIndex(height);
-                    if (index < 1 || index > 64) {
-                        index = 1;
-                    }
-                    ((SetableSection) chunk.getSection(index)).wrg_vanilla$set(container);
-                    ((SetableSection) chunk.getSection(index - 1)).wrg_vanilla$set(container);
-                    ((SetableSection) chunk.getSection(index - 2)).wrg_vanilla$set(container);
                 }
+            }
+            Identifier caveIdentifier = noiseChunk.getTile(center).flow > 0.5 ? ((VanillaBiome) Biomes.lush_caves.getInstance()).getIdentifier() : ((VanillaBiome) Biomes.dripstone_caves.getInstance()).getIdentifier();
+            RegistryEntry<Biome> entry = provider.getMap().get(caveIdentifier);
+            for (int k = 0; k < 4; k++) {
+                for (int m = 0; m < 4; m++) {
+                    for (int l = 0; l < 4; l++) {
+                        cave.swapUnsafe(k, l, m, entry);
+                    }
+                }
+            }
+            for (ChunkSection section0 : chunk.getSectionArray()) {
+                ((SetableSection) section0).wrg_vanilla$set(cave);
+            }
+            int height = (int) noiseChunk.getTile(center).height;
+            int index = chunk.getSectionIndex(height);
+            if (index < 1 || index > 64) {
+                index = 1;
+            }
+            if (index < chunk.getSectionArray().length) {
+                ((SetableSection) chunk.getSection(index)).wrg_vanilla$set(container);
+            }
+            if (index + 1 < chunk.getSectionArray().length) {
+                ((SetableSection) chunk.getSection(index + 1)).wrg_vanilla$set(container);
+            }
+            if (index - 1 > 0) {
+                ((SetableSection) chunk.getSection(index - 1)).wrg_vanilla$set(container);
+            }
+            if (index - 2 > 0) {
+                ((SetableSection) chunk.getSection(index - 2)).wrg_vanilla$set(container);
             }
         }
     }
@@ -283,15 +308,29 @@ public final class WRGChunkGenerator extends ChunkGenerator {
 
     @Override
     public int getHeight(int x, int z, Heightmap.Type heightmap, HeightLimitView world, NoiseConfig noiseConfig) {
-        return (int) getWorld().generator.getHeightMapPos(x, z).getHeight();
+        return getWorld().generator.getColumn(x, z).getStrata().getLast().getCeil();
     }
 
     @Override
     public VerticalBlockSample getColumnSample(int x, int z, HeightLimitView world, NoiseConfig noiseConfig) {
-        int y = world.getHeight();
-        BlockState[] states = new BlockState[y];
-        for (int i = 0; i < y; i++) {
-            states[i] = Blocks.STONE.getDefaultState();
+        List<Stratum> strata = getWorld().generator.getColumn(x, z).getStrata();
+        int max = strata.getLast().getCeil()+1;
+        BlockState[] states = new BlockState[max];
+        int y = 0;
+        for (Stratum stratum : strata){
+            for (int i = 0; i < stratum.depth; i++) {
+                if (stratum.getRegistry() instanceof IdentifiableRegistery id) {
+                    Block block = Registries.BLOCK.get(id.getIdentifier());
+                    states[MathUtil.min(y, max-1)] = block.getDefaultState();
+                    y++;
+                }
+            }
+        }
+        for (int i = 0; i < states.length; i++) {
+            BlockState state = states[i];
+            if (state == null){
+                states[i] = Blocks.STONE.getDefaultState();
+            }
         }
         return new VerticalBlockSample(0, states);
     }

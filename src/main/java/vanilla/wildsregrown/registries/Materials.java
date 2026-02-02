@@ -41,6 +41,8 @@ public class Materials {
     public static final RegistryObject<GeoMaterial> diorite = WorldRegistries.MATERIALS.register(new VanillaMaterial(Blocks.DIORITE.getTranslationKey(),0.8f, 0.2f, 8, dirt.getKey(), gravel.getKey(), cobble_stone.getKey()));
     public static final RegistryObject<GeoMaterial> calcite = WorldRegistries.MATERIALS.register(new VanillaMaterial(Blocks.CALCITE.getTranslationKey(),0.8f, 0.2f, 8, dirt.getKey(), gravel.getKey(), cobble_stone.getKey()));
 
+    public static final RegistryObject<GeoMaterial> basalt = WorldRegistries.MATERIALS.register(new VanillaMaterial(Blocks.BASALT.getTranslationKey(),0.8f, 0.2f, 8, dirt.getKey(), gravel.getKey(), cobble_stone.getKey()));
+
     public static final RegistryObject<GeoMaterial> red_sandstone = WorldRegistries.MATERIALS.register(new VanillaMaterial(Blocks.RED_SANDSTONE.getTranslationKey(),0.5f, 0.5f, 5, red_sand.getKey(), red_sand.getKey(), red_sand.getKey()));
     public static final RegistryObject<GeoMaterial> sandstone = WorldRegistries.MATERIALS.register(new VanillaMaterial(Blocks.SANDSTONE.getTranslationKey(), 0.5f, 0.5f, 5,sand.getKey(),sand.getKey(), sand.getKey()));
 

@@ -29,20 +29,23 @@ public record RenderWorldMap(RenderPipeline pipeline, TextureSetup textureSetup,
         public void setupVertices(VertexConsumer vertexConsumer) {
 
             stack.pushMatrix();
+            int k = 3;
             for (int i = 0; i < res; i++) {
                 for (int j = 0; j < res; j++) {
+
+                    //if (j < res-1){k = 1;}
 
                     int dx = x + (int) MathUtil.range(i, 0, res, 0, size);
                     int dz = y + (int) MathUtil.range(j, 0, res, 0, size);
                     int color = image[i*res+j];
 
                     vertexConsumer.vertex(this.stack(), dx, dz).color(color);
-                    vertexConsumer.vertex(this.stack(), dx, dz+8).color(color);
-                    vertexConsumer.vertex(this.stack(), dx+8, dz).color(color);
+                    vertexConsumer.vertex(this.stack(), dx, dz+k).color(color);
+                    vertexConsumer.vertex(this.stack(), dx+k, dz).color(color);
 
                     vertexConsumer.vertex(this.stack(), dx, dz).color(color);
-                    vertexConsumer.vertex(this.stack(), dx, dz+8).color(color);
-                    vertexConsumer.vertex(this.stack(), dx+8, dz+8).color(color);
+                    vertexConsumer.vertex(this.stack(), dx, dz+k).color(color);
+                    vertexConsumer.vertex(this.stack(), dx+k, dz+k).color(color);
                 }
             }
             stack.popMatrix();

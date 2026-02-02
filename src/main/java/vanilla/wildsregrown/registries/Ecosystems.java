@@ -4,8 +4,8 @@ import com.sipke.api.terrain.Ecosystem;
 import com.sipke.registeries.WorldRegistries;
 import com.sipke.registeries.core.RegistryObject;
 import vanilla.wildsregrown.WRGVanilla;
-import vanilla.wildsregrown.ecosystems.*;
-import vanilla.wildsregrown.ecosystems.sea.*;
+import vanilla.wildsregrown.registries.ecosystems.*;
+import vanilla.wildsregrown.registries.ecosystems.sea.*;
 
 public class Ecosystems {
 
@@ -25,6 +25,10 @@ public class Ecosystems {
     public static final RegistryObject<Ecosystem> cool_desert = WorldRegistries.ECOSYSTEMS.register(new CoolDesert());
     public static final RegistryObject<Ecosystem> savanna = WorldRegistries.ECOSYSTEMS.register(new Savanna());
     public static final RegistryObject<Ecosystem> spirit_forest = WorldRegistries.ECOSYSTEMS.register(new SpiritForest());
+    public static final RegistryObject<Ecosystem> chapparal = WorldRegistries.ECOSYSTEMS.register(new Chapparal());
+    public static final RegistryObject<Ecosystem> ice = WorldRegistries.ECOSYSTEMS.register(new Ice());
+    public static final RegistryObject<Ecosystem> polar_desert = WorldRegistries.ECOSYSTEMS.register(new PolarDesert());
+    public static final RegistryObject<Ecosystem> tundra = WorldRegistries.ECOSYSTEMS.register(new Tundra());
 
     public static final RegistryObject<Ecosystem> ancient_forest = WorldRegistries.ECOSYSTEMS.register(new AncientForest());
     public static final RegistryObject<Ecosystem> coniferious_forest = WorldRegistries.ECOSYSTEMS.register(new ConiferiousForest());

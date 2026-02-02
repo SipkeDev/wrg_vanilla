@@ -63,7 +63,7 @@ public class WRGBiomeProvider extends BiomeSource {
     @Override
     public RegistryEntry<Biome> getBiome(int x, int y, int z, MultiNoiseUtil.MultiNoiseSampler noise) {
         //WRGVanilla.LOGGER.info("Hello?" + x + " " + y + " " + z);
-        return biomes.get(((IdentifiableRegistery)World.instance.generator.getBiome(x, z)).getIdentifier());
+        return biomes.get(((IdentifiableRegistery)World.getInstance().generator.getBiome(x, z)).getIdentifier());
     }
 
     @Override

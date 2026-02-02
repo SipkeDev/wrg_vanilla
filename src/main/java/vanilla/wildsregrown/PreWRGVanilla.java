@@ -50,6 +50,9 @@ public class PreWRGVanilla implements PreLaunchEntrypoint {
         frame.setResizable(false);
         frame.setAlwaysOnTop(true);
         frame.setVisible(true);
+
+
+
     }
 
 }

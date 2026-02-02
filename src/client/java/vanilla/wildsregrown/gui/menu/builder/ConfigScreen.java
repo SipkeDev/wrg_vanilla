@@ -1,6 +1,7 @@
 package vanilla.wildsregrown.gui.menu.builder;
 
 import com.sipke.builder.WorldBuilder;
+import com.sipke.math.MapType;
 import com.sipke.math.MathUtil;
 import com.sipke.api.grid.WRGConfig;
 import net.fabricmc.api.EnvType;
@@ -44,6 +45,10 @@ public class ConfigScreen extends Screen {
         this.parent = parent;
     }
 
+    public Screen getParent() {
+        return parent;
+    }
+
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
         super.render(context, mouseX, mouseY, deltaTicks);
@@ -73,17 +78,25 @@ public class ConfigScreen extends Screen {
                         new Climate(),
                         new WorldTab(),
                         new Filters(),
-                        //new Features(),
+                        new Features(),
+                        new Generator(),
                         new Disclaimer()
                 }).build();
         this.addDrawableChild(this.tabNavigation);
         DirectionalLayoutWidget directionalLayoutWidget = this.layout.addFooter(DirectionalLayoutWidget.horizontal().spacing(8));
+        directionalLayoutWidget.add(ButtonWidget.builder(Text.of("Save"), (button) -> {
+            client.setScreen(new SaveConfigScreen(builder, this));
+        }).dimensions(0,0, 80, 20).build());
+        directionalLayoutWidget.add(ButtonWidget.builder(Text.of("Load"), (button) -> {
+            client.setScreen(new ListConfigsScreen(builder, this));
+        }).dimensions(0,0, 80, 20).build());
         directionalLayoutWidget.add(ButtonWidget.builder(Text.of("Accept"), (button) -> {
             if (parent instanceof WorldTypeScreen screen){
                 screen.getCamera().takeShot(builder.ctx);
             }
             this.client.setScreen(parent);
         }).build());
+
         this.layout.forEachChild((child) -> {
             child.setNavigationOrder(1);
             this.addDrawableChild(child);
@@ -129,9 +142,9 @@ public class ConfigScreen extends Screen {
                     case rainfall -> CameraRender.rainfall;
                 });
                 camera.takeShot(builder.ctx);
-            }), 1,3, positioner);
+            }), 1,3, positioner).setTooltip(Tooltip.of(Text.of("Change camera render")));
             this.grid.add(new TextWidget(0, 0, w, 20, Text.literal("Height"), textRenderer), 2,3, positioner);
-            this.grid.add(new SliderWidget(0, 0, w, 20, Text.of(String.valueOf(builder.ctx.config.getHeightMod()).substring(0, 3)), builder.ctx.config.getHeightMod()+0.5) {
+            this.grid.add(new SliderWidget(0, 0, w, 20, Text.of(shortenSliderValue(builder.ctx.config.getHeightMod())), builder.ctx.config.getHeightMod()+0.5) {
                 @Override
                 protected void updateMessage() {
                     setMessage(Text.of(shortenSliderValue(value-0.5)));}
@@ -140,7 +153,7 @@ public class ConfigScreen extends Screen {
                     builder.ctx.config.setHeightMod((float)value-0.5f);
                     camera.takeShot(builder.ctx);
                 }
-            }, 3, 3, positioner);
+            }, 3, 3, positioner).setTooltip(Tooltip.of(Text.of("Sets the height offset")));
             this.grid.add(new SliderWidget(0, 0, w, 20, Text.of(shortenSliderValue(builder.ctx.config.getHeightModClamp())), builder.ctx.config.getHeightModClamp()*2.0) {
                 @Override
                 protected void updateMessage() {
@@ -150,15 +163,15 @@ public class ConfigScreen extends Screen {
                     builder.ctx.config.setHeightModClamp((float)(value/2.0));
                     camera.takeShot(builder.ctx);
                 }
-            }, 4,3, positioner);
-            this.grid.add(CyclingButtonWidget.builder(MapSelector::getDisplayText, MapSelector.linear).values(MapSelector.values()).build(0,0, w, 20, Text.literal("Type"),
+            }, 4,3, positioner).setTooltip(Tooltip.of(Text.of("Sets the height clamp")));
+            this.grid.add(CyclingButtonWidget.builder(MapSelector::getDisplayText, getMappedValue(builder.ctx.config.getHeightType())).values(MapSelector.values()).build(0,0, w, 20, Text.literal("Type"),
                     (button, value) -> {builder.ctx.config.setHeightType(value.getType());camera.takeShot(builder.ctx);}
-            ), 5,3, positioner);
+            ), 5,3, positioner).setTooltip(Tooltip.of(Text.of("Sets the height type")));
 
 
             this.grid.add(new EmptyWidget(w,10), 1, 4, positioner);
             this.grid.add(new TextWidget(0, 0, w, 20, Text.literal("Temperature"), textRenderer), 2, 4, positioner);
-            this.grid.add(new SliderWidget(0, 0, w, 20, Text.of(String.valueOf(builder.ctx.config.getTemperature()).substring(0, 3)), builder.ctx.config.getTemperature()+0.5) {
+            this.grid.add(new SliderWidget(0, 0, w, 20, Text.of(shortenSliderValue(builder.ctx.config.getTemperature())), builder.ctx.config.getTemperature()+0.5) {
                 @Override
                 protected void updateMessage() {
                     setMessage(Text.of(shortenSliderValue(value-0.5)));
@@ -168,7 +181,7 @@ public class ConfigScreen extends Screen {
                     builder.ctx.config.setTemperature((float)value-0.5f);
                     camera.takeShot(builder.ctx);
                 }
-            }, 3,4, positioner);
+            }, 3,4, positioner).setTooltip(Tooltip.of(Text.of("Sets the temperature offset")));
             this.grid.add(new SliderWidget(0, 0, w, 20, Text.of(shortenSliderValue(builder.ctx.config.getTemperatureClamp())), builder.ctx.config.getTemperatureClamp()*2.0) {
                 @Override
                 protected void updateMessage() {
@@ -178,15 +191,15 @@ public class ConfigScreen extends Screen {
                     builder.ctx.config.setTemperatureClamp((float)(value/2.0));
                     camera.takeShot(builder.ctx);
                 }
-            }, 4,4, positioner);
-            this.grid.add(CyclingButtonWidget.builder(MapSelector::getDisplayText, MapSelector.linear).values(MapSelector.values()).build(0,0, w, 20, Text.literal("Type"),
+            }, 4,4, positioner).setTooltip(Tooltip.of(Text.of("Sets the temperature clamp")));
+            this.grid.add(CyclingButtonWidget.builder(MapSelector::getDisplayText, getMappedValue(builder.ctx.config.getTemperatureType())).values(MapSelector.values()).build(0,0, w, 20, Text.literal("Type"),
                     (button, value) -> {builder.ctx.config.setTemperatureType(value.getType());camera.takeShot(builder.ctx);}
-            ), 5,4, positioner);
+            ), 5,4, positioner).setTooltip(Tooltip.of(Text.of("Sets the temperature type")));
 
 
             this.grid.add(new EmptyWidget(width/4,10), 1, 5, positioner);
             this.grid.add(new TextWidget(0, 0, w, 20, Text.literal("RainFall"), textRenderer), 2, 5, positioner);
-            this.grid.add(new SliderWidget(0, 0, w, 20, Text.of(String.valueOf(builder.ctx.config.getRainfall()).substring(0, 3)), builder.ctx.config.getHeightMod()+0.5) {
+            this.grid.add(new SliderWidget(0, 0, w, 20, Text.of(shortenSliderValue(builder.ctx.config.getRainfall())), builder.ctx.config.getHeightMod()+0.5) {
                 @Override
                 protected void updateMessage() {
                     setMessage(Text.of(shortenSliderValue(value-0.5)));}
@@ -196,7 +209,7 @@ public class ConfigScreen extends Screen {
                     //camera.setRender(CameraRender.temperature);
                     camera.takeShot(builder.ctx);
                 }
-            }, 3,5, positioner);
+            }, 3,5, positioner).setTooltip(Tooltip.of(Text.of("Sets the rainfall offset")));
             this.grid.add(new SliderWidget(0, 0, w, 20, Text.of(shortenSliderValue(builder.ctx.config.getRainfallClamp())), builder.ctx.config.getRainfallClamp()*2.0) {
                 @Override
                 protected void updateMessage() {
@@ -206,13 +219,24 @@ public class ConfigScreen extends Screen {
                     builder.ctx.config.setRainfallClamp((float)(value/2.0));
                     camera.takeShot(builder.ctx);
                 }
-            }, 4,5, positioner);
-            this.grid.add(CyclingButtonWidget.builder(MapSelector::getDisplayText, MapSelector.linear).values(MapSelector.values()).build(0,0, w, 20, Text.literal("Type"),
+            }, 4,5, positioner).setTooltip(Tooltip.of(Text.of("Sets the rainfall clamp")));
+            this.grid.add(CyclingButtonWidget.builder(MapSelector::getDisplayText, getMappedValue(builder.ctx.config.getRainfallType())).values(MapSelector.values()).build(0,0, w, 20, Text.literal("Type"),
                     (button, value) -> {builder.ctx.config.setRainfallType(value.getType());camera.takeShot(builder.ctx);}
-            ), 5,5, positioner);
+            ), 5,5, positioner).setTooltip(Tooltip.of(Text.of("Sets the rainfall type")));
 
         }
 
+    }
+
+    private MapSelector getMappedValue(MapType type) {
+        return switch (type){
+            case linear -> MapSelector.linear;
+            case hermite -> MapSelector.hermite;
+            case inverseHermite -> MapSelector.inverseHermite;
+            case quintic -> MapSelector.quintic;
+            case inverseQuintic -> MapSelector.inverseQuintic;
+            case almostUnitIdentity -> MapSelector.almostUnitIdentity;
+        };
     }
 
     @Environment(EnvType.CLIENT)
@@ -224,18 +248,19 @@ public class ConfigScreen extends Screen {
             Positioner positioner = this.grid.copyPositioner();
 
             TextWidget totalSize = new TextWidget(0, 0, 100, 20, Text.literal("Total size: " + builder.ctx.config.getScaleMultiplier()*(builder.ctx.size*chunkSize)), textRenderer);
+            totalSize.setTooltip(Tooltip.of(Text.of("Total world height/width in blocks")));
             this.grid.add(new TextWidget(0, 0, 100, 20, Text.literal("World Scale"), textRenderer), 1, 1);
             this.grid.add(CyclingButtonWidget.builder(WorldSize::getDisplayText, WorldSize.medium).values(WorldSize.values()).build(0,0, 100, 20, Text.literal("World Size"),
                     (button, size) -> {
                 builder.ctx.setSize(size.getSize());
                 totalSize.setMessage(Text.literal("Total size: " + builder.ctx.config.getScaleMultiplier()*(builder.ctx.size*chunkSize)));
-            }), 2, 1, positioner);
+            }), 2, 1, positioner).setTooltip(Tooltip.of(Text.of("change continent grid size")));
             this.grid.add(CyclingButtonWidget.builder(WorldMultiplier::getDisplayText, WorldMultiplier.Normal).values(WorldMultiplier.values()).build(0,0, 100, 20, Text.literal("Scale multiplier"),
                     (button, v) -> {
                             builder.ctx.config.setScaleMultiplier(v.getValue());
                             totalSize.setMessage(Text.literal("Total size: " + builder.ctx.config.getScaleMultiplier()*(builder.ctx.size*chunkSize)));
             }), 3, 1, positioner);
-            this.grid.add(totalSize, 4,1, positioner);
+            this.grid.add(totalSize, 4,1, positioner).setTooltip(Tooltip.of(Text.of("Sets the continent grid multiplier, 1x : 1 pixel = 1 chunk")));
 
             this.grid.add(new TextWidget(0, 0, 100, 20, Text.literal("Cell scale"), textRenderer), 1, 2, positioner);
             this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Landform " + shortenSliderValue(builder.ctx.config.getLandformScale())), builder.ctx.config.getLandformScale()) {
@@ -247,7 +272,7 @@ public class ConfigScreen extends Screen {
                 protected void applyValue() {
                     builder.ctx.config.setLandformScale((float)value);
                 }
-            }, 2,2, positioner);
+            }, 2,2, positioner).setTooltip(Tooltip.of(Text.of("Changes the landform cell width")));
             this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Ecosystem " + shortenSliderValue(builder.ctx.config.getEcoSystemScale())), builder.ctx.config.getEcoSystemScale()) {
                 @Override
                 protected void updateMessage() {
@@ -257,7 +282,7 @@ public class ConfigScreen extends Screen {
                 protected void applyValue() {
                     builder.ctx.config.setEcoSystemScale((float)value);
                 }
-            }, 3,2, positioner);
+            }, 3,2, positioner).setTooltip(Tooltip.of(Text.of("Changes the ecosystem cell width")));
             this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Biome " + shortenSliderValue(builder.ctx.config.getBiomeScale())), builder.ctx.config.getBiomeScale()) {
                 @Override
                 protected void updateMessage() {
@@ -267,7 +292,7 @@ public class ConfigScreen extends Screen {
                 protected void applyValue() {
                     builder.ctx.config.setBiomeScale((float)value);
                 }
-            }, 4,2, positioner);
+            }, 4,2, positioner).setTooltip(Tooltip.of(Text.of("Changes the biome cell width")));
 
             //Height/factor
             this.grid.add(new TextWidget(0, 0, 100, 20, Text.literal("Height Factors"), textRenderer), 1, 3, positioner);
@@ -280,7 +305,7 @@ public class ConfigScreen extends Screen {
                 protected void applyValue() {
                     builder.ctx.config.setContinentFactor((float)value);
                 }
-            }, 2,3, positioner);
+            }, 2,3, positioner).setTooltip(Tooltip.of(Text.of("Changes the continent height")));
             this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Landform " + WRGConfig.calcLandformFactor(builder.ctx.config.getBiomeFactor())), builder.ctx.config.getLandformFactor()) {
                 @Override
                 protected void updateMessage() {
@@ -290,7 +315,7 @@ public class ConfigScreen extends Screen {
                 protected void applyValue() {
                     builder.ctx.config.setLandformFactor((float)value);
                 }
-            }, 3,3, positioner);
+            }, 3,3, positioner).setTooltip(Tooltip.of(Text.of("Changes the landform height")));;
             this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Biome " + WRGConfig.calcBiomeFactor(builder.ctx.config.getBiomeFactor())), builder.ctx.config.getBiomeFactor()) {
                 @Override
                 protected void updateMessage() {
@@ -300,17 +325,17 @@ public class ConfigScreen extends Screen {
                 protected void applyValue() {
                     builder.ctx.config.setBiomeFactor((float)value);
                 }
-            }, 4,3, positioner);
-            this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("WaterLevel " + builder.ctx.config.getWaterLevel()), builder.ctx.config.getWaterLevel()) {
+            }, 4,3, positioner).setTooltip(Tooltip.of(Text.of("Changes the biome height")));;
+            this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Waterlevel " + shortenSliderValue(MathUtil.range(builder.ctx.config.getWaterLevel(), 0, 1, 0, WRGConfig.calcContinentFactor(builder.ctx.config.getContinentFactor())))), builder.ctx.config.getWaterLevel()) {
                 @Override
                 protected void updateMessage() {
-                    message = Text.of("Waterlevel " + shortenSliderValue(MathUtil.range((float)value, 0, 1, 0, 384)));
+                    message = Text.of("Waterlevel " + shortenSliderValue(MathUtil.range((float)value, 0, 1, 0, WRGConfig.calcContinentFactor(builder.ctx.config.getContinentFactor()))));
                 }
                 @Override
                 protected void applyValue() {
                     builder.ctx.config.setWaterLevel((float)value);
                 }
-            }, 5,3, positioner);
+            }, 5,3, positioner).setTooltip(Tooltip.of(Text.of("Changes the water level, relative to continent height")));
 
         }
     }
@@ -325,10 +350,16 @@ public class ConfigScreen extends Screen {
             Positioner positioner = this.grid.copyPositioner();
 
             this.grid.add(new TextWidget(0, 0, 100, 20, Text.literal("Erosion"), textRenderer), 1, 1, positioner);
-            this.grid.add(CyclingButtonWidget.builder(WorldAge::getDisplayText, WorldAge.normal).values(WorldAge.values()).build(0,0, 100, 20, Text.literal("World Age"),
+            this.grid.add(CyclingButtonWidget.builder(WorldAge::getDisplayText, switch (builder.ctx.config.getWorldAge()){
+                case 0 -> WorldAge.young;
+                case 1 -> WorldAge.normal;
+                case 2 -> WorldAge.old;
+                case 3 -> WorldAge.ancient;
+                case 4 -> WorldAge.max;
+                default -> throw new IllegalStateException("Unexpected value: " + builder.ctx.config.getWorldAge());
+            }).values(WorldAge.values()).build(0,0, 100, 20, Text.literal("World Age"),
                     (button, v) -> {
                         builder.ctx.config.setWorldAge(v.getId());
-                        builder.ctx.age = v.getId();
                     }), 2, 1, positioner).setTooltip(Tooltip.of(Text.of("Changes the amount of cycles, older means more erosion but slower performance.")));
             this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Inertia " + shortenSliderValue(builder.ctx.config.getErosionInertia())), builder.ctx.config.getErosionInertia()) {
                 @Override
@@ -349,7 +380,7 @@ public class ConfigScreen extends Screen {
                 protected void applyValue() {
                     builder.ctx.config.setErosionFriction((float)value);
                 }
-            }, 4,1, positioner).setTooltip(Tooltip.of(Text.of("Changes how much velocity is kept for each step")));
+            }, 4,1, positioner).setTooltip(Tooltip.of(Text.of("Changes how much velocity is kept for each time step")));
             this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Capacity " + shortenSliderValue(builder.ctx.config.getErosionCapacity())), builder.ctx.config.getErosionCapacity()) {
                 @Override
                 protected void updateMessage() {
@@ -359,7 +390,7 @@ public class ConfigScreen extends Screen {
                 protected void applyValue() {
                     builder.ctx.config.setErosionCapacity((float)value);
                 }
-            }, 5,1, positioner).setTooltip(Tooltip.of(Text.of("How much sediment the stream carries")));
+            }, 5,1, positioner).setTooltip(Tooltip.of(Text.of("How much sediment the stream can carry")));
             this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Rate " + shortenSliderValue(builder.ctx.config.getErosionRate())), builder.ctx.config.getErosionRate()) {
                 @Override
                 protected void updateMessage() {
@@ -369,7 +400,7 @@ public class ConfigScreen extends Screen {
                 protected void applyValue() {
                     builder.ctx.config.setErosionRate((float)value);
                 }
-            }, 6,1, positioner).setTooltip(Tooltip.of(Text.of("Rate of picking up/depositing sediment")));
+            }, 6,1, positioner).setTooltip(Tooltip.of(Text.of("Rate of picking up and depositing sediment")));
 
             this.grid.add(new TextWidget(0, 0, 100, 20, Text.literal("MainRivers"), textRenderer), 1, 2, positioner);
             this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Inertia " + shortenSliderValue(builder.ctx.config.getMainRiverInertia())), builder.ctx.config.getMainRiverInertia()) {
@@ -381,7 +412,7 @@ public class ConfigScreen extends Screen {
                 protected void applyValue() {
                     builder.ctx.config.setMainRiverInertia((float)value);
                 }
-            }, 2,2, positioner);
+            }, 2,2, positioner).setTooltip(Tooltip.of(Text.of("Changes the tendency of moving direction")));
             this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Friction " + shortenSliderValue(builder.ctx.config.getMainRiverFriction())), builder.ctx.config.getMainRiverFriction()) {
                 @Override
                 protected void updateMessage() {
@@ -391,7 +422,7 @@ public class ConfigScreen extends Screen {
                 protected void applyValue() {
                     builder.ctx.config.setMainRiverFriction((float)value);
                 }
-            }, 3,2, positioner);
+            }, 3,2, positioner).setTooltip(Tooltip.of(Text.of("Changes how much velocity is kept each time step")));
 
             this.grid.add(new TextWidget(0, 0, 100, 20, Text.literal("Rivers"), textRenderer), 4, 2, positioner);
             this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Inertia " + shortenSliderValue(builder.ctx.config.getRiverInertia())), builder.ctx.config.getRiverInertia()) {
@@ -403,7 +434,7 @@ public class ConfigScreen extends Screen {
                 protected void applyValue() {
                     builder.ctx.config.setRiverInertia((float)value);
                 }
-            }, 5,2, positioner);
+            }, 5,2, positioner).setTooltip(Tooltip.of(Text.of("Changes the tendency of moving direction")));
             this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Friction " + shortenSliderValue(builder.ctx.config.getRiverFriction())), builder.ctx.config.getRiverFriction()) {
                 @Override
                 protected void updateMessage() {
@@ -413,10 +444,164 @@ public class ConfigScreen extends Screen {
                 protected void applyValue() {
                     builder.ctx.config.setRiverFriction((float)value);
                 }
-            }, 6,2, positioner);
+            }, 6,2, positioner).setTooltip(Tooltip.of(Text.of("Changes how much velocity is kept each time step")));
 
         }
             
+    }
+
+    @Environment(EnvType.CLIENT)
+    class Generator extends GridScreenTab {
+
+        Generator() {
+            super(Text.of("Generator"));
+            this.grid.setColumnSpacing(8);
+            this.grid.setRowSpacing(5);
+            Positioner positioner = this.grid.copyPositioner();
+
+            int h0 = 16;
+
+            this.grid.add(CheckboxWidget.builder(Text.of("Flow erosion"), textRenderer).callback((widget, bool)-> builder.ctx.config.setFlowEnabled(bool)).checked(builder.ctx.config.getFlowEnabled()).maxWidth(100).build(), 1, 1, positioner);
+            this.grid.add(new SliderWidget(0, 0, 100, h0, Text.of("Inertia " + shortenSliderValue(builder.ctx.config.getFlowInertia())), builder.ctx.config.getFlowInertia()) {
+                @Override
+                protected void updateMessage() {
+                    message = Text.of("Inertia " + shortenSliderValue(value));
+                }
+                @Override
+                protected void applyValue() {
+                    builder.ctx.config.setFlowInertia((float)value);
+                }
+            }, 2,1, positioner).setTooltip(Tooltip.of(Text.of("Changes the tendency of moving direction")));
+            this.grid.add(new SliderWidget(0, 0, 100, h0, Text.of("Friction " + shortenSliderValue(builder.ctx.config.getFlowFriction())), builder.ctx.config.getFlowFriction()) {
+                @Override
+                protected void updateMessage() {
+                    message = Text.of("Friction " + shortenSliderValue(value));
+                }
+                @Override
+                protected void applyValue() {
+                    builder.ctx.config.setFlowFriction((float)value);
+                }
+            }, 3,1, positioner).setTooltip(Tooltip.of(Text.of("Changes how much velocity is kept each time step")));
+            this.grid.add(new SliderWidget(0, 0, 100, h0, Text.of("Rate " + shortenSliderValue(builder.ctx.config.getFlowRate())), builder.ctx.config.getFlowRate()) {
+                @Override
+                protected void updateMessage() {
+                    message = Text.of("Rate " + shortenSliderValue(value));
+                }
+                @Override
+                protected void applyValue() {
+                    builder.ctx.config.setFlowRate((float)value);
+                }
+            }, 4,1, positioner).setTooltip(Tooltip.of(Text.of("Changes how much sediment can be transferred")));
+            this.grid.add(new SliderWidget(0, 0, 100, h0, Text.of("Capacity " + shortenSliderValue(WRGConfig.calcFlowCapacity(builder.ctx.config.getFlowCapacity()))), builder.ctx.config.getFlowCapacity()) {
+                @Override
+                protected void updateMessage() {
+                    message = Text.of("Capacity " + shortenSliderValue(WRGConfig.calcFlowCapacity((float)value)));
+                }
+                @Override
+                protected void applyValue() {
+                    builder.ctx.config.setFlowCapacity((float)value);
+                }
+            }, 5,1, positioner).setTooltip(Tooltip.of(Text.of("Changes how much sediment can be transported")));
+            this.grid.add(new SliderWidget(0, 0, 100, h0, Text.of("Brush Size " + shortenSliderValue(WRGConfig.calcFlowBrush(builder.ctx.config.getFlowBrush()))), builder.ctx.config.getFlowBrush()) {
+                @Override
+                protected void updateMessage() {
+                    message = Text.of("Brush Size " + (WRGConfig.calcFlowBrush((float)value)));
+                }
+                @Override
+                protected void applyValue() {
+                    builder.ctx.config.setFlowBrush((float)value);
+                }
+            }, 6,1, positioner).setTooltip(Tooltip.of(Text.of("Sets the stream radius, how wide is the flow erosion?")));
+            this.grid.add(new SliderWidget(0, 0, 100, h0, Text.of("Power " + shortenSliderValue(WRGConfig.calcFlowPower(builder.ctx.config.getFlowPower()))), builder.ctx.config.getFlowPower()) {
+                @Override
+                protected void updateMessage() {
+                    message = Text.of("Power " + shortenSliderValue(WRGConfig.calcFlowPower((float)value)));
+                }
+                @Override
+                protected void applyValue() {
+                    builder.ctx.config.setFlowPower((float)value);
+                }
+            }, 7,1, positioner).setTooltip(Tooltip.of(Text.of("How many times a spawn position is used")));
+
+            this.grid.add(CheckboxWidget.builder(Text.of("Thermal erosion"), textRenderer).callback((widget, bool)-> builder.ctx.config.setThermalEnabled(bool)).checked(builder.ctx.config.getThermalEnabled()).maxWidth(100).build(), 1, 2, positioner);
+            this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("ThalusAngle " + shortenSliderValue(WRGConfig.calcThermalOffset(builder.ctx.config.getThermalThalusAngle()))), builder.ctx.config.getThermalThalusAngle()) {
+                @Override
+                protected void updateMessage() {
+                    message = Text.of("ThalusAngle " + shortenSliderValue(WRGConfig.calcThermalOffset((float)value)));
+                }
+                @Override
+                protected void applyValue() {
+                    builder.ctx.config.setThermalThalusAngle((float)value);
+                }
+            }, 2,2, positioner).setTooltip(Tooltip.of(Text.of("Adds a offset to the material thalus angle")));
+            this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Threshold " + shortenSliderValue(builder.ctx.config.getThermalThreshold())), builder.ctx.config.getThermalThreshold()) {
+                @Override
+                protected void updateMessage() {
+                    message = Text.of("Threshold " + shortenSliderValue(value));
+                }
+                @Override
+                protected void applyValue() {
+                    builder.ctx.config.setThermalThreshold((float)value);
+                }
+            }, 3,2, positioner).setTooltip(Tooltip.of(Text.of("If the erosion mask is lower than the threshold, it erodes.")));
+
+            this.grid.add(CheckboxWidget.builder(Text.of("Hydraulic erosion"), textRenderer).callback((widget, bool)-> builder.ctx.config.setHydroEnabled(bool)).checked(builder.ctx.config.getHydroEnabled()).maxWidth(100).build(), 4, 2, positioner);
+            this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Inertia " + shortenSliderValue(WRGConfig.calcHydroOffset(builder.ctx.config.getHydrologyInertia()))), builder.ctx.config.getHydrologyInertia()) {
+                @Override
+                protected void updateMessage() {
+                    message = Text.of("Inertia " + shortenSliderValue(WRGConfig.calcHydroOffset((float)value)));
+                }
+                @Override
+                protected void applyValue() {
+                    builder.ctx.config.setHydrologyInertia((float)value);
+                }
+            }, 5,2, positioner).setTooltip(Tooltip.of(Text.of("Adds a offset to the material inertia")));
+            this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Friction " + shortenSliderValue(WRGConfig.calcHydroOffset(builder.ctx.config.getHydrologyFriction()))), builder.ctx.config.getHydrologyFriction()) {
+                @Override
+                protected void updateMessage() {
+                    message = Text.of("Friction " + shortenSliderValue(WRGConfig.calcHydroOffset((float)value)));
+                }
+                @Override
+                protected void applyValue() {
+                    builder.ctx.config.setHydrologyFriction((float)value);
+                }
+            }, 6,2, positioner).setTooltip(Tooltip.of(Text.of("Adds a offset to the material friction")));
+            this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Capacity " + shortenSliderValue(WRGConfig.calcHydroCapacity(builder.ctx.config.getHydrologyCapacity()))), builder.ctx.config.getHydrologyCapacity()) {
+                @Override
+                protected void updateMessage() {
+                    message = Text.of("Capacity " + shortenSliderValue(WRGConfig.calcHydroCapacity((float)value)));
+                }
+                @Override
+                protected void applyValue() {
+                    builder.ctx.config.setHydrologyCapacity((float)value);
+                }
+            }, 7,2, positioner).setTooltip(Tooltip.of(Text.of("Changes how much sediment can be transported")));
+
+            this.grid.add(new TextWidget(0, 0, 150, 20, Text.literal("Miscellaneous").setStyle(Style.EMPTY.withBold(true)), textRenderer), 1, 3, positioner);
+            this.grid.add(new SliderWidget(0, 0, 150, 20, Text.of("Flow Blend " + shortenSliderValue(builder.ctx.config.getFlowBlend())), builder.ctx.config.getFlowBlend()) {
+                @Override
+                protected void updateMessage() {
+                    message = Text.of("Flow Blend " + shortenSliderValue(value));
+                }
+                @Override
+                protected void applyValue() {
+                    builder.ctx.config.setFlowBlend((float)value);
+                }
+            }, 2,3, positioner).setTooltip(Tooltip.of(Text.of("Does the continent hydro flow map blend in with the terrain?")));
+            this.grid.add(new SliderWidget(0, 0, 150, 20, Text.of("Erosion mask " + shortenSliderValue(builder.ctx.config.getErosionMask())), builder.ctx.config.getErosionMask()) {
+                @Override
+                protected void updateMessage() {
+                    message = Text.of("Erosion mask" + shortenSliderValue(value));
+                }
+                @Override
+                protected void applyValue() {
+                    builder.ctx.config.setErosionMask((float)value);
+                }
+            }, 3,3, positioner).setTooltip(Tooltip.of(Text.of("Changes the multiplier how much erosion can interact with the terrain.\n 1 means no erosion, 0 means full erosion interaction \n is naturally populated by the tree spawner in wilds regrown.")));
+            this.grid.add(new TextWidget(0, 0, 150, 20, Text.literal("Notes").setStyle(Style.EMPTY.withBold(true)), textRenderer), 3, 3, positioner);
+            //this.grid.add(new TextWidget(0, 0, 150, 150, Text.literal("Lorem ipsum lange uitleg over deze shizzle "), textRenderer), 4, 3, positioner);
+
+        }
     }
 
     @Environment(EnvType.CLIENT)
@@ -425,88 +610,88 @@ public class ConfigScreen extends Screen {
         Features() {
             super(Text.of("Features"));
             this.grid.setSpacing(8);
+            int w = 120;
 
             Positioner positioner = this.grid.copyPositioner();
 
-            this.grid.add(new TextWidget(0, 0, 100, 20, Text.literal("Caves").setStyle(Style.EMPTY.withBold(true)), textRenderer), 1, 1, positioner);
-            this.grid.add(new TextWidget(0, 0, 100, 20, Text.literal("Branchworks"), textRenderer), 2, 1, positioner);
-            this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Node Distance " + 0.5), 0.5) {
+            this.grid.add(new TextWidget(0, 0, w, 20, Text.literal("Caves").setStyle(Style.EMPTY.withBold(true)), textRenderer), 1, 1, positioner);
+            this.grid.add(new TextWidget(0, 0, w, 20, Text.literal("Branchworks"), textRenderer), 2, 1, positioner);
+            this.grid.add(new SliderWidget(0, 0, w, 20, Text.of("Node Distance " + shortenSliderValue(WRGConfig.calcCaveNodeDist(builder.ctx.config.getBranchworksDistance()))), builder.ctx.config.getBranchworksDistance()) {
                 @Override
                 protected void updateMessage() {
-                    message = Text.of("Node Distance " + shortenSliderValue(value));
+                    message = Text.of("Node Distance " + shortenSliderValue(WRGConfig.calcCaveNodeDist((float)value)));
                 }
                 @Override
                 protected void applyValue() {
-                    builder.ctx.config.setErosionInertia((float)value);
+                    builder.ctx.config.setBranchworksDistance((float)value);
                 }
-            }, 3,1, positioner);
-            this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Size " + shortenSliderValue(builder.ctx.config.getErosionFriction())), builder.ctx.config.getErosionFriction()) {
-                @Override
-                protected void updateMessage() {
-                    message = Text.of("Size " + shortenSliderValue(value));
-                }
-                @Override
-                protected void applyValue() {
-                    builder.ctx.config.setEcoSystemScale((float)value);
-                }
-            }, 4,1, positioner);
-
-            this.grid.add(new TextWidget(0, 0, 100, 20, Text.literal("Elongated"), textRenderer), 5, 1, positioner);
-            this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Node Distance " + 0.5), 0.5) {
-                @Override
-                protected void updateMessage() {
-                    message = Text.of("Node Distance " + shortenSliderValue(value));
-                }
-                @Override
-                protected void applyValue() {
-                    builder.ctx.config.setErosionInertia((float)value);
-                }
-            }, 6,1, positioner);
-            this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Size " + shortenSliderValue(builder.ctx.config.getErosionFriction())), builder.ctx.config.getErosionFriction()) {
+            }, 3,1, positioner).setTooltip(Tooltip.of(Text.of("Sets the distance of cave nodes, 1 = 16 blocks")));
+            this.grid.add(new SliderWidget(0, 0, w, 20, Text.of("Size " + shortenSliderValue(builder.ctx.config.getBranchworksSize())), builder.ctx.config.getBranchworksSize()) {
                 @Override
                 protected void updateMessage() {
                     message = Text.of("Size " + shortenSliderValue(value));
                 }
                 @Override
                 protected void applyValue() {
-                    builder.ctx.config.setEcoSystemScale((float)value);
+                    builder.ctx.config.setBranchworksSize((float)value);
                 }
-            }, 7,1, positioner);
+            }, 4,1, positioner).setTooltip(Tooltip.of(Text.of("Sets cave size")));;
 
-            this.grid.add(new TextWidget(0, 0, 100, 20, Text.literal("Facture network"), textRenderer), 1, 3, positioner);
-            this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Node distance " + shortenSliderValue(builder.ctx.config.getMainRiverInertia())), builder.ctx.config.getMainRiverInertia()) {
+            this.grid.add(new TextWidget(0, 0, w, 20, Text.literal("Elongated"), textRenderer), 5, 1, positioner);
+            this.grid.add(new SliderWidget(0, 0, w, 20, Text.of("Node Distance " + shortenSliderValue(WRGConfig.calcCaveNodeDist(builder.ctx.config.getElongatedDistance()))), builder.ctx.config.getElongatedDistance()) {
                 @Override
                 protected void updateMessage() {
-                    message = Text.of("Node distance " + shortenSliderValue(value));
+                    message = Text.of("Node Distance " + shortenSliderValue(WRGConfig.calcCaveNodeDist((float)value)));
                 }
                 @Override
                 protected void applyValue() {
-                    builder.ctx.config.setErosionInertia((float)value);
+                    builder.ctx.config.setElongatedDistance((float)value);
                 }
-            }, 2,3, positioner);
-            this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Size " + shortenSliderValue(builder.ctx.config.getMainRiverFriction())), builder.ctx.config.getMainRiverFriction()) {
+            }, 6,1, positioner).setTooltip(Tooltip.of(Text.of("Sets the distance of cave nodes, 1 = 16 blocks")));;
+            this.grid.add(new SliderWidget(0, 0, w, 20, Text.of("Size " + shortenSliderValue(builder.ctx.config.getElongatedSize())), builder.ctx.config.getElongatedSize()) {
                 @Override
                 protected void updateMessage() {
                     message = Text.of("Size " + shortenSliderValue(value));
                 }
                 @Override
                 protected void applyValue() {
-                    builder.ctx.config.setEcoSystemScale((float)value);
+                    builder.ctx.config.setElongatedSize((float)value);
                 }
-            }, 3,3, positioner);
+            }, 7,1, positioner).setTooltip(Tooltip.of(Text.of("Sets cave size")));;
 
-            this.grid.add(new TextWidget(0, 0, 100, 20, Text.literal("Structures").setStyle(Style.EMPTY.withBold(true)), textRenderer), 1, 4, positioner);
-            this.grid.add(new TextWidget(0, 0, 100, 20, Text.literal("Distance? Map structures by type/category?"), textRenderer), 2, 4, positioner);
-            this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Distance " + 0.5), 0.5) {
+            this.grid.add(new TextWidget(0, 0, w, 20, Text.literal("Facture network"), textRenderer), 1, 3, positioner);
+            this.grid.add(new SliderWidget(0, 0, w, 20, Text.of("Node distance " + shortenSliderValue(WRGConfig.calcCaveNodeDist(builder.ctx.config.getFractureDistance()))), builder.ctx.config.getFractureDistance()) {
+                @Override
+                protected void updateMessage() {
+                    message = Text.of("Node distance " + shortenSliderValue(WRGConfig.calcCaveNodeDist((float)value)));
+                }
+                @Override
+                protected void applyValue() {
+                    builder.ctx.config.setFractureDistance((float)value);
+                }
+            }, 2,3, positioner).setTooltip(Tooltip.of(Text.of("Sets the distance of cave nodes, 1 = 16 blocks")));;
+            this.grid.add(new SliderWidget(0, 0, w, 20, Text.of("Size " + shortenSliderValue(builder.ctx.config.getFractureSize())), builder.ctx.config.getFractureSize()) {
+                @Override
+                protected void updateMessage() {
+                    message = Text.of("Size " + shortenSliderValue(value));
+                }
+                @Override
+                protected void applyValue() {
+                    builder.ctx.config.setFractureSize((float)value);
+                }
+            }, 3,3, positioner).setTooltip(Tooltip.of(Text.of("Sets cave size")));
+
+            this.grid.add(new TextWidget(0, 0, w, 20, Text.literal("Structures").setStyle(Style.EMPTY.withBold(true)), textRenderer), 1, 4, positioner);
+            this.grid.add(new SliderWidget(0, 0, w, 20, Text.of("Distance " + builder.ctx.config.getStructureDistance()), builder.ctx.config.getStructureDistance()) {
                 @Override
                 protected void updateMessage() {
                     message = Text.of("Distance " + shortenSliderValue(value));
                 }
                 @Override
                 protected void applyValue() {
-                    builder.ctx.config.setErosionInertia((float)value);
+                    builder.ctx.config.setStructureDistance((float)value);
                 }
-            }, 3,4, positioner);
+            }, 2,4, positioner).setTooltip(Tooltip.of(Text.of("Sets the distance multiplier for structure spawns")));
 
         }
     }

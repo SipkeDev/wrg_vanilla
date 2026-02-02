@@ -12,6 +12,8 @@ import com.sipke.api.categorization.Temperature;
 import com.sipke.api.cell.BiomeCell;
 import com.sipke.api.cell.EcoSystemCell;
 import com.sipke.api.cell.LandFormCell;
+import com.sipke.api.chunk.Chunk;
+import com.sipke.api.chunk.ChunkTile;
 import com.sipke.api.features.caves.CaveLayer;
 import com.sipke.api.features.caves.CaveNode;
 import com.sipke.api.features.structures.Structure;
@@ -27,7 +29,6 @@ import com.sipke.api.terrain.Ecosystem;
 import com.sipke.api.terrain.Landform;
 import com.sipke.math.Distance;
 import com.sipke.math.MathUtil;
-import com.sipke.registeries.Structures;
 import com.sipke.registeries.WorldRegistries;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.suggestion.SuggestionProviders;
@@ -46,6 +47,7 @@ import vanilla.wildsregrown.world.WRGChunkGenerator;
 
 import java.util.Objects;
 
+import static com.sipke.WorldConstants.chunkSize;
 import static com.sipke.api.rivers.RiverConstants.noiseRivers;
 
 public class Locate {
@@ -61,7 +63,7 @@ public class Locate {
     public static final SuggestionProvider<ServerCommandSource> ALL_BIOMES = SuggestionProviders.register(Identifier.of("biomes"), (context, builder) ->
             CommandSource.suggestMatching(WorldRegistries.BIOMES.getEntries().stream().map(Biome::toString), builder));
     public static final SuggestionProvider<ServerCommandSource> ALL_STRUCTURES = SuggestionProviders.register(Identifier.of("structures"), (context, builder) ->
-            CommandSource.suggestMatching(Structures.getEntries().stream().map(Structure::toString), builder));
+            CommandSource.suggestMatching(WorldRegistries.STRUCTURES.getEntries().stream().map(Structure::toString), builder));
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(((CommandManager.literal("wrg").requires(ServerCommandSource::isExecutedByPlayer))
@@ -93,8 +95,8 @@ public class Locate {
                         .then(CommandManager.literal("lake").executes((context) -> riverNode(context.getSource(), 0f, 1f, true)))
                 )
                 .then(CommandManager.literal("structure")
-                        .then(CommandManager.argument("structure", StringArgumentType.word()).suggests(ALL_STRUCTURES).executes((context) ->
-                                structure(context.getSource(), StringArgumentType.getString(context, "structure")))))
+                        .then(CommandManager.argument("structure", StringArgumentType.word()).suggests(ALL_STRUCTURES).executes((context) -> structure(context.getSource(), StringArgumentType.getString(context, "structure"))))
+                        .then(CommandManager.literal("list").executes((context) -> logStructures(context.getSource()))))
         );
     }
 
@@ -162,26 +164,35 @@ public class Locate {
     private static int here(ServerCommandSource source) throws CommandSyntaxException {
 
         World world = ((WRGChunkGenerator) source.getWorld().getChunkManager().getChunkGenerator()).getWorld();
-        int playerX = source.getPlayer().getBlockX(), playerZ = source.getPlayer().getBlockZ();
-        HeightMapPos pos = world.generator.getHeightMapPos(playerX, playerZ);
+        BlockPos blockPos = BlockPos.ofFloored(source.getPosition());
+        HeightMapPos pos = world.generator.getHeightMapPos(blockPos.getX(), blockPos.getZ());
+
+        Chunk chunk = world.generator.getNoiseChunk(blockPos.getX(), blockPos.getZ());
+        ChunkTile tile = chunk.getTile(
+                PosTranslator.globalCoordtoLocalArea(blockPos.getX(), chunkSize)
+                        *chunkSize+
+                PosTranslator.globalCoordtoLocalArea(blockPos.getZ(), chunkSize)
+        );
 
         Ecosystem ecosystem = WorldRegistries.ECOSYSTEMS.get(pos.getEcosystem());
         Text text = Text.of("\n" +
                 "Landform: " + WorldRegistries.LANDFORMS.get(pos.getLandform()) + "\n" +
                 "Ecosystem: " + ecosystem + "\n" +
                 "Biome: " + WorldRegistries.BIOMES.get(pos.getBiome()).toString() + "\n" +
-                pos.getHeight()   + " [Height]" + "\n" +
-                pos.getTemperature() + " |Temperature [" + Temperature.get(pos.getTemperature()) + "]" + "\n" +
-                pos.getMoisture()    + " |Moisture [" + Moisture.get(pos.getMoisture()) + "]" + "\n" +
-                pos.getFlows()    + " [Flows]" + "\n");// +
-                //pos.getBiomePlacement() + " [Placement] "
-        //);
+                tile.height   + " [Height]" + "\n" +
+                tile.temperature + " |Temperature [" + Temperature.get(pos.getTemperature()) + "]" + "\n" +
+                tile.moisture + " |Moisture [" + Moisture.get(pos.getMoisture()) + "]" + "\n" +
+                tile.flow + " [Flows]" +
+                tile.biomePlacement + " [Placement] " +
+                tile.biomeValue + "biome value"
+        );
 
-        if (source.getWorld().getChunkManager().getChunkGenerator() == null || (playerX + playerZ) == 0) {
+        if (source.getWorld().getChunkManager().getChunkGenerator() == null || (blockPos.getX() + blockPos.getZ()) == 0) {
             throw KEY_NOT_FOUND.create("Error");
         } else {
             source.getServer().sendMessage(text);
-            return 0;
+            source.sendFeedback(() -> text, false);
+            return 1;
         }
     }
 
@@ -389,16 +400,31 @@ public class Locate {
         }
     }
 
-    private static int structure(ServerCommandSource source, String l) throws CommandSyntaxException {
+    private static int logStructures(ServerCommandSource source) throws CommandSyntaxException {
 
-        Structure structure = Structures.get(l);
-        if (structure == null) {throw STRUCTURE_INVALID_EXCEPTION.create(l);}
+        WRGChunkGenerator chunkGenerator = (WRGChunkGenerator) source.getWorld().getChunkManager().getChunkGenerator();
+        WorldGrid grid = chunkGenerator.getWorld().getGrid();
+
+        for (EcoSystemCell ecoSystemCell : grid.getEcosystems()){
+            for (BiomeCell biomeCell : ecoSystemCell.getBiomes()){
+                for (StructureSpawn spawn : biomeCell.getStructures()){
+                    World.LOGGER.info(spawn.toString(grid.getSize(), grid.getConfig().scaleMultiplier()));
+                }
+            }
+        }
+
+        return 1;
+    }
+
+    private static int structure(ServerCommandSource source, String name) throws CommandSyntaxException {
+
+        Structure structure = WorldRegistries.STRUCTURES.get(name);
+        if (structure == null) {throw STRUCTURE_INVALID_EXCEPTION.create(name);}
 
         BlockPos blockPos = BlockPos.ofFloored(source.getPosition());
         WRGChunkGenerator chunkGenerator = (WRGChunkGenerator) source.getWorld().getChunkManager().getChunkGenerator();
         WorldGrid grid = chunkGenerator.getWorld().getGrid();
 
-        int playerX = source.getPlayer().getBlockX(), playerZ = source.getPlayer().getBlockZ();
         float dist = Float.MAX_VALUE;
         StructureSpawn pos = null;
 
@@ -407,8 +433,8 @@ public class Locate {
                 for (StructureSpawn newPos : cell.getStructures()) {
 
                     if (structure.getKey() == newPos.getStructure().getKey()) {
-                        int dx = newPos.getX() - playerX;
-                        int dz = newPos.getZ() - playerZ;
+                        int dx = newPos.getTranslatedX(grid.getSize(), grid.getConfig().scaleMultiplier()) - blockPos.getX();
+                        int dz = newPos.getTranslatedZ(grid.getSize(), grid.getConfig().scaleMultiplier()) - blockPos.getZ();
                         float newDist = Distance.euclidean.apply(dx, dz);
                         if (dist > newDist) {
                             dist = newDist;
@@ -423,7 +449,7 @@ public class Locate {
         if (pos == null) {
             throw STRUCTURE_INVALID_EXCEPTION.create(structure.name);
         } else {
-            BlockPos targetPos = new BlockPos(pos.getX(),0, pos.getZ());
+            BlockPos targetPos = new BlockPos(pos.getTranslatedX(grid.getSize(), grid.getConfig().scaleMultiplier()),0, pos.getTranslatedZ(grid.getSize(), grid.getConfig().scaleMultiplier()));
             return sendCoordinates(source, blockPos, targetPos, structure.name);
         }
     }

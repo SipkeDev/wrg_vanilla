@@ -9,10 +9,7 @@ import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import vanilla.wildsregrown.commands.Locate;
-import vanilla.wildsregrown.registries.Biomes;
-import vanilla.wildsregrown.registries.Ecosystems;
-import vanilla.wildsregrown.registries.Landforms;
-import vanilla.wildsregrown.registries.Materials;
+import vanilla.wildsregrown.registries.*;
 import vanilla.wildsregrown.world.WRGChunkGenerator;
 import vanilla.wildsregrown.world.biomes.WRGBiomeProvider;
 
@@ -31,7 +28,11 @@ public class WRGVanilla implements ModInitializer {
 		// However, some things (like resources) may still be uninitialized.
 		// Proceed with mild caution.
 
+		/// Spawnables
 		Materials.init();
+		Structures.init();
+		Floras.init();
+		/// Spawns
 		Landforms.init();
 		Ecosystems.init();
 		Biomes.init();

@@ -55,15 +55,6 @@ public class IntegratedBuilder {
                 Identifier.of(modid, "gen_world_rivers")
         ));
         this.builder.applyMainRivers();
-        this.moisture();
-    }
-
-    public void moisture() {
-        this.client.setScreenAndRender(new BackgroundMessageScreen(
-                Text.of("Simulating rain"),
-                Identifier.of(modid, "gen_world_type")
-        ));
-        this.builder.applyMoisture();
         this.ecosystemGrid();
     }
 
@@ -73,6 +64,15 @@ public class IntegratedBuilder {
                 Identifier.of(modid, "gen_world_type")
         ));
         this.builder.applyEcosystemGrid();
+        this.rainfallFilter();
+    }
+
+    public void rainfallFilter() {
+        this.client.setScreenAndRender(new BackgroundMessageScreen(
+                Text.of("Simulating rain"),
+                Identifier.of(modid, "gen_world_type")
+        ));
+        this.builder.applyRainfallShadow();
         this.biomeGrid();
     }
 
@@ -99,7 +99,7 @@ public class IntegratedBuilder {
                 Text.of("Updating Heightmap"),
                 Identifier.of(modid, "gen_world_rivers")
         ));
-        this.builder.updateHeightMap();
+        //this.builder.updateHeightMap();
         this.caves();
     }
 
