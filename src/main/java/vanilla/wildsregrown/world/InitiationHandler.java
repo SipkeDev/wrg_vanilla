@@ -29,7 +29,7 @@ public class InitiationHandler {
             ImmutableList.Builder<RegistryEntry<Biome>> builder = ImmutableList.builder();
             Registry<Biome> biomeRegistry = registryAccess.getOrThrow(RegistryKeys.BIOME);
             biomeRegistry.getIndexedEntries().forEach(ctx -> {
-                WRGVanilla.LOGGER.info("Key: " + ctx);
+                //WRGVanilla.LOGGER.info("Key: " + ctx);
                 builder.add(ctx);
             });
             if (chunk.getBiomeSource() instanceof WRGBiomeProvider provider){

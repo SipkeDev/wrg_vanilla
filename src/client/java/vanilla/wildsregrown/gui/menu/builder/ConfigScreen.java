@@ -242,6 +242,17 @@ public class ConfigScreen extends Screen {
     @Environment(EnvType.CLIENT)
     class WorldTab extends GridScreenTab {
 
+        private WorldMultiplier getMultiplier() {
+            float v = builder.ctx.config.getScaleMultiplier();
+            if (v < 1){
+                return WorldMultiplier.Half;
+            }else if (v == 1f){
+                return WorldMultiplier.Normal;
+            }else {
+                return WorldMultiplier.Double;
+            }
+        }
+
         WorldTab() {
             super(Text.of("World"));
             this.grid.setSpacing(8);
@@ -252,10 +263,10 @@ public class ConfigScreen extends Screen {
             this.grid.add(new TextWidget(0, 0, 100, 20, Text.literal("World Scale"), textRenderer), 1, 1);
             this.grid.add(CyclingButtonWidget.builder(WorldSize::getDisplayText, WorldSize.medium).values(WorldSize.values()).build(0,0, 100, 20, Text.literal("World Size"),
                     (button, size) -> {
-                builder.ctx.setSize(size.getSize());
+                        builder.ctx.setSize(size.getSize());
                 totalSize.setMessage(Text.literal("Total size: " + builder.ctx.config.getScaleMultiplier()*(builder.ctx.size*chunkSize)));
             }), 2, 1, positioner).setTooltip(Tooltip.of(Text.of("change continent grid size")));
-            this.grid.add(CyclingButtonWidget.builder(WorldMultiplier::getDisplayText, WorldMultiplier.Normal).values(WorldMultiplier.values()).build(0,0, 100, 20, Text.literal("Scale multiplier"),
+            this.grid.add(CyclingButtonWidget.builder(WorldMultiplier::getDisplayText, getMultiplier()).values(WorldMultiplier.values()).build(0,0, 100, 20, Text.literal("Scale multiplier"),
                     (button, v) -> {
                             builder.ctx.config.setScaleMultiplier(v.getValue());
                             totalSize.setMessage(Text.literal("Total size: " + builder.ctx.config.getScaleMultiplier()*(builder.ctx.size*chunkSize)));
@@ -306,7 +317,7 @@ public class ConfigScreen extends Screen {
                     builder.ctx.config.setContinentFactor((float)value);
                 }
             }, 2,3, positioner).setTooltip(Tooltip.of(Text.of("Changes the continent height")));
-            this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Landform " + WRGConfig.calcLandformFactor(builder.ctx.config.getBiomeFactor())), builder.ctx.config.getLandformFactor()) {
+            this.grid.add(new SliderWidget(0, 0, 100, 20, Text.of("Landform " + WRGConfig.calcLandformFactor(builder.ctx.config.getLandformFactor())), builder.ctx.config.getLandformFactor()) {
                 @Override
                 protected void updateMessage() {
                     message = Text.of("Landform: " + shortenSliderValue(WRGConfig.calcLandformFactor((float)value)));

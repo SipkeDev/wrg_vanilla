@@ -18,6 +18,7 @@ public class RedMeadow extends VanillaBiome {
         register(Structures.mineshaft);
         register(Structures.swamp_hut);
         register(Structures.ruined_portal);
+        register(Structures.walled_pillager_outpost);
     }
 
 }

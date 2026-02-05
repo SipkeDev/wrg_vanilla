@@ -19,6 +19,7 @@ public class AbandonedFarmLand extends VanillaBiome {
         register(Floras.fern, FloraSpawnRule.rare, 0, 0, false);
         register(Structures.pillager_outpost);
         register(Structures.trail_ruins);
+        register(Structures.walled_pillager_outpost);
     }
 
 }

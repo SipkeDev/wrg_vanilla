@@ -14,4 +14,9 @@ public class VanillaStructure extends Structure implements IdentifiableRegistery
         return Identifier.ofVanilla(this.getName());
     }
 
+    @Override
+    public String toString(){
+        return getIdentifier().toShortTranslationKey() + "_" + getClass().getSimpleName();
+    }
+
 }

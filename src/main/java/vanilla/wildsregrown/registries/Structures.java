@@ -5,17 +5,21 @@ import com.sipke.registeries.WorldRegistries;
 import com.sipke.registeries.core.RegistryObject;
 import vanilla.wildsregrown.WRGVanilla;
 import vanilla.wildsregrown.api.VanillaStructure;
+import vanilla.wildsregrown.registries.structures.Outpost;
+import vanilla.wildsregrown.registries.structures.WalledOutpost;
+import vanilla.wildsregrown.registries.structures.WalledVillage;
 
 public class Structures {
 
     public static final RegistryObject<Structure> swamp_hut = WorldRegistries.STRUCTURES.register(new VanillaStructure("swamp_hut", -16,0,-16, 32,32,32, 8, 48, 2));
     public static final RegistryObject<Structure> igloo = WorldRegistries.STRUCTURES.register(new VanillaStructure("igloo", -16,0,-16, 32,32,32, 12, 32, 1));
     public static final RegistryObject<Structure> jungle_temple = WorldRegistries.STRUCTURES.register(new VanillaStructure("jungle_temple", -16,0,-16, 32,32,32, 12, 32, 1));
-    public static final RegistryObject<Structure> pillager_outpost = WorldRegistries.STRUCTURES.register(new VanillaStructure("pillager_outpost", -16,0,-16, 32,32,32, 18, 32, 1));
-    public static final RegistryObject<Structure> mansion = WorldRegistries.STRUCTURES.register(new VanillaStructure("mansion", -32,0,-32, 32,32,32, 12, 64, 12));
+    public static final RegistryObject<Structure> pillager_outpost = WorldRegistries.STRUCTURES.register(new Outpost());
+    public static final RegistryObject<Structure> walled_pillager_outpost = WorldRegistries.STRUCTURES.register(new WalledOutpost());
+    public static final RegistryObject<Structure> mansion = WorldRegistries.STRUCTURES.register(new VanillaStructure("mansion", -32,0,-32, 32,32,32, 32, 64, 12));
     public static final RegistryObject<Structure> desert_pyramid = WorldRegistries.STRUCTURES.register(new VanillaStructure("desert_pyramid", -16,-1,-16, 16,16,16, 24, 44, 2));
-    public static final RegistryObject<Structure> village = WorldRegistries.STRUCTURES.register(new VanillaStructure("village", -32,0,-32, 32,16,32, 24, 80, 12));
-    public static final RegistryObject<Structure> walled_village = WorldRegistries.STRUCTURES.register(new VanillaStructure("village", -32,0,-32, 32,16,32, 24, 80, 12));
+    public static final RegistryObject<Structure> village = WorldRegistries.STRUCTURES.register(new VanillaStructure("village", -32,0,-32, 32,16,32, 32, 180, 6));
+    public static final RegistryObject<Structure> walled_village = WorldRegistries.STRUCTURES.register(new WalledVillage());
 
     //?
     public static final RegistryObject<Structure> ruined_portal = WorldRegistries.STRUCTURES.register(new VanillaStructure("ruined_portal", 0,0,0, 16,16,16, 24, 16, 2));

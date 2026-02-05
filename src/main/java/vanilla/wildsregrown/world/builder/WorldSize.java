@@ -33,6 +33,15 @@ public enum WorldSize implements StringIdentifiable {
         this.size = size;
     }
 
+    public static WorldSize bySize(int size) {
+        for (WorldSize preset : values()){
+            if (preset.size == size){
+                return preset;
+            }
+        }
+        return WorldSize.medium;
+    }
+
     public int getId() {
         return this.id;
     }

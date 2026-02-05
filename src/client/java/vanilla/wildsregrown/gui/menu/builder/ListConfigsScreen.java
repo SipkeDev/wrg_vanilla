@@ -130,7 +130,7 @@ public class ListConfigsScreen extends Screen {
                 TextRenderer textRender = ListConfigsScreen.this.textRenderer;
                 int w = ListConfigsScreen.this.width / 2;
                 int h = this.getContentMiddleY();
-                WRGVanilla.LOGGER.info(name);
+                //WRGVanilla.LOGGER.info(name);
                 Objects.requireNonNull(ListConfigsScreen.this.textRenderer);
                 context.drawCenteredTextWithShadow(textRender, id, w, h - 9 / 2, -1);
             }

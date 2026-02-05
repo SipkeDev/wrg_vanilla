@@ -13,6 +13,7 @@ public class HotDesert extends VanillaBiome {
         register(Structures.mineshaft);
         register(Structures.desert_pyramid);
         register(Structures.stronghold);
+        register(Structures.buried_treasure);
     }
 
 }

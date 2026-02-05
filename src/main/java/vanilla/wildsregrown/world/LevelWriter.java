@@ -51,8 +51,8 @@ public abstract class LevelWriter {
                     data.putByte("allowCommands", (byte) 1);
                     data.putInt("GameType", ctx.gamemode);
                     data.put("WorldGenSettings", world);
-                    data.putInt("SpawnX", PosTranslator.gridToGlobal(ctx.playerSpawn.getX(), ctx.size));
-                    data.putInt("SpawnZ", PosTranslator.gridToGlobal(ctx.playerSpawn.getZ(), ctx.size));
+                    data.putInt("SpawnX", PosTranslator.gridToGlobal(ctx.playerSpawn.getX(), ctx.size, ctx.config.getScaleMultiplier()));
+                    data.putInt("SpawnZ", PosTranslator.gridToGlobal(ctx.playerSpawn.getZ(), ctx.size, ctx.config.getScaleMultiplier()));
                     data.put("DragonFight", dragon);
 
                     levelNBT.put("Data", data);

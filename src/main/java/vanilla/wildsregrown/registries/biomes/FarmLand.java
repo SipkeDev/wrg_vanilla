@@ -18,6 +18,7 @@ public class FarmLand extends VanillaBiome {
         register(Floras.hay_bale, FloraSpawnRule.legendary, 0, 0, false);
         register(Structures.walled_village);
         register(Structures.pillager_outpost);
+        register(Structures.walled_pillager_outpost);
     }
 
 }

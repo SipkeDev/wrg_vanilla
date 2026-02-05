@@ -1,5 +1,7 @@
 package vanilla.wildsregrown.gui.menu.builder;
 
+import com.sipke.api.grid.GridLoader;
+import com.sipke.api.grid.WRGConfig;
 import com.sipke.builder.WorldBuilder;
 import com.sipke.math.MathUtil;
 import net.minecraft.client.MinecraftClient;
@@ -8,6 +10,7 @@ import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.CyclingButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.toast.SystemToast;
 import net.minecraft.text.Text;
 import net.minecraft.world.GameMode;
 import vanilla.wildsregrown.gui.menu.camera.CameraRender;
@@ -33,6 +36,11 @@ public class WorldTypeScreen extends Screen {
         this.camera = new WorldTypeCamera(MathUtil.min(client.getWindow().getScaledWidth(), client.getWindow().getScaledHeight()));
         this.camera.setRender(CameraRender.climate);
         this.camera.takeShot(builder.ctx);
+
+        this.builder.ctx.config = GridLoader.getConfig("vanilla_plus");
+        SystemToast toast = SystemToast.create(client, SystemToast.Type.PERIODIC_NOTIFICATION, Text.of("Loaded config"), Text.of("Vanilla plus"));
+        client.getToastManager().add(toast);
+
     }
 
     protected void init(){
@@ -53,7 +61,7 @@ public class WorldTypeScreen extends Screen {
             this.camera.takeShot(builder.ctx);
         }).tooltip(Tooltip.of(Text.literal("Set world seed"))).dimensions(this.width  + dx, y+=m, w, h).build());
 
-        this.addDrawableChild(CyclingButtonWidget.builder(GameMode::getSimpleTranslatableName, GameMode.DEFAULT).values(GameMode.values()).build(this.width + dx, y+=m, w, h, Text.literal("Gamemode"), (button, type) -> {this.builder.ctx.gamemode = type.getIndex();})).setTooltip(Tooltip.of(Text.literal("Set the gamemode")));
+        this.addDrawableChild(CyclingButtonWidget.builder(GameMode::getSimpleTranslatableName, GameMode.CREATIVE).values(GameMode.values()).build(this.width + dx, y+=m, w, h, Text.literal("Gamemode"), (button, type) -> {this.builder.ctx.gamemode = type.getIndex();})).setTooltip(Tooltip.of(Text.literal("Set the gamemode")));
         this.addDrawableChild(ClimateWidget.builder(SpawnPicker::getDisplayText).values(SpawnPicker.values()).initially(SpawnPicker.steppe).build(this.width + dx, y+=m, w, h, Text.literal("Spawn"), (button, type) -> {this.builder.ctx.spawnClimate = type.getClimate();})).setTooltip(Tooltip.of(Text.literal("Set world spawn")));
         this.addDrawableChild(CyclingButtonWidget.builder(WorldType::getDisplayText, WorldType.continent).values(WorldType.values()).build(this.width + dx, y+=m, w, h, Text.literal("World Type"), (button, type) -> {this.builder.ctx.type = type.getType();this.camera.takeShot(this.builder.ctx);})).setTooltip(Tooltip.of(Text.literal("Set world type")));
         this.addDrawableChild(CyclingButtonWidget.builder(WorldAge::getDisplayText, switch (builder.ctx.config.getWorldAge()){

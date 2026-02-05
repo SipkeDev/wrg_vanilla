@@ -105,15 +105,12 @@ public final class WRGChunkGenerator extends ChunkGenerator {
 
             com.sipke.api.chunk.Chunk noiseChunk = getWorld().generator.getNoiseChunk(chunkPos.getStartX(), chunkPos.getStartZ());
             if (noiseChunk.hasSpawnRef()) {
-                WRGVanilla.LOGGER.info("pos: " + chunkPos);
                 for (StructureSpawn spawn : noiseChunk.getSpawnRefs()) {
-                    WRGVanilla.LOGGER.info("spawn: " + spawn.getIdentifier());
-
                     for (StructureSet entry : registryManager.getOrThrow(RegistryKeys.STRUCTURE_SET)) {
                         RegistryEntry<Structure> ref = entry.structures().getFirst().structure();
                         if (ref.getIdAsString().contains(spawn.getStructure().name)) {
 
-                            WRGVanilla.LOGGER.info("entry:" + ref.getIdAsString());
+                            //WRGVanilla.LOGGER.info("entry:" + ref.getIdAsString());
                             List<StructureSet.WeightedEntry> list = entry.structures();
 
                             //Check if position is already taken
@@ -127,10 +124,8 @@ public final class WRGChunkGenerator extends ChunkGenerator {
                             if (list.size() == 1) {
                                 //Single structure
                                 this.trySetStructureStart(entry.structures().getFirst(), structureAccessor, registryManager, placementCalculator.getNoiseConfig(), structureTemplateManager, placementCalculator.getStructureSeed(), chunk, chunkPos, chunkSectionPos, dimension);
-                                WRGVanilla.LOGGER.info("mark:" + entry);
                             } else {
-                                //Multi struct
-                                WRGVanilla.LOGGER.info("IMPLEMENT JIGSAW STRUCT");
+                                //Multi/jigsaw struct
                                 ArrayList<StructureSet.WeightedEntry> arrayList = new ArrayList<>(list);
                                 ChunkRandom chunkRandom = new ChunkRandom(new CheckedRandom(0L));
                                 chunkRandom.setCarverSeed(placementCalculator.getStructureSeed(), chunkPos.x, chunkPos.z);
@@ -164,7 +159,7 @@ public final class WRGChunkGenerator extends ChunkGenerator {
                                 }
                             }
                         }else {
-                            WRGVanilla.LOGGER.info("SkIPPED: " + entry.structures().getFirst().structure().getIdAsString() + " / " + spawn.getStructure().name);
+                            //WRGVanilla.LOGGER.info("SkIPPED: " + entry.structures().getFirst().structure().getIdAsString() + " / " + spawn.getStructure().name);
                         }
 
                     }

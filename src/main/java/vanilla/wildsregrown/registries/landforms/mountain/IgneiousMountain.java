@@ -14,11 +14,11 @@ import vanilla.wildsregrown.registries.Materials;
 public class IgneiousMountain extends Landform {
 
     public IgneiousMountain() {
-        super(0.8f, Placement.Elevation.mountain, Climate.chaparral, Climate.coniferousForest, Climate.polarDesert, Climate.tundra, Climate.hotScrubland, Climate.coolScrubland, Climate.mixedForest, Climate.coniferousForest, Climate.steppe);
-        register(new StratumConfig(Materials.stone.getKey(), 12, 34, 3));
-        register(new StratumConfig(Materials.granite.getKey(), 12, 24, 2));
-        register(new StratumConfig(Materials.andesite.getKey(), 8, 18, 1));
-        register(new StratumConfig(Materials.diorite.getKey(), 2, 12, 1));
+        super(0.92f, Placement.Elevation.mountain, Climate.chaparral, Climate.coniferousForest, Climate.polarDesert, Climate.tundra, Climate.hotScrubland, Climate.coolScrubland, Climate.mixedForest, Climate.coniferousForest, Climate.steppe);
+        register(new StratumConfig(Materials.stone.getKey(), 24, 70, 3));
+        register(new StratumConfig(Materials.granite.getKey(), 24, 48, 2));
+        register(new StratumConfig(Materials.andesite.getKey(), 24, 32, 1));
+        register(new StratumConfig(Materials.diorite.getKey(), 8, 16, 1));
     }
 
     @Override
@@ -33,8 +33,8 @@ public class IgneiousMountain extends Landform {
         return NoiseGenerator.cubic(seed.next(), 1200)
                 .fbm(5)
                 .subtract(erosion)
-                .multiply(Constant.of(edge).map(MapType.hermite, 0.002f, 0.88f).clamp(0.3f, 1f))
-                .add(NoiseGenerator.perlin(seed.next(), 384).fbm(3).multiply(0.025f));
+                .multiply(Constant.of(edge).map(MapType.hermite, 0.002f, 0.95f).clamp(0.22f, 1f))
+                .add(NoiseGenerator.perlin(seed.next(), 384).fbm(3).multiply(0.08f));
     }
 
     @Override

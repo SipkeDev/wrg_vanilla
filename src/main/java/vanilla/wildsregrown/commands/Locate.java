@@ -104,34 +104,37 @@ public class Locate {
 
         BlockPos blockPos = BlockPos.ofFloored(source.getPosition());
         World world = ((WRGChunkGenerator) source.getWorld().getChunkManager().getChunkGenerator()).getWorld();
-        int playerX = source.getPlayer().getBlockX(), playerZ = source.getPlayer().getBlockZ();
         int size = world.getGrid().getSize();
+        float scale = world.getConfig().scaleMultiplier();
 
-        RiverNode closestNode = closestRiverNode(lowerBound, upperBound, world, playerX, playerZ, size, lake);
+        RiverNode closestNode = closestRiverNode(lowerBound, upperBound, world, blockPos.getX(), blockPos.getZ(), size, scale, lake);
 
         if (closestNode == null){
             source.sendFeedback(() -> Text.of("Not found"), false);
         }
-        BlockPos targetPos = new BlockPos(PosTranslator.gridToGlobal(closestNode.x, size),0,PosTranslator.gridToGlobal(closestNode.z, size));
+        assert closestNode != null;
+        BlockPos targetPos = new BlockPos(closestNode.getTranslatedX(size, scale),closestNode.getFlooredY() + 32, closestNode.getTranslatedZ(size, scale));
 
-        if (source.getWorld().getChunkManager().getChunkGenerator() == null || (playerX + playerZ) == 0) {
+        if (source.getWorld().getChunkManager().getChunkGenerator() == null) {
             throw KEY_NOT_FOUND.create("Error");
         } else {
             return sendCoordinates(source, blockPos, targetPos,
                     "Node:" + "\n" +
-                            "x: " + closestNode.x + "\n" +
+                            "x: " + closestNode.getTranslatedX(size, scale) + "\n" +
                             "y: " + closestNode.y + "\n" +
-                            "z: " + closestNode.z + "\n" +
+                            "z: " + closestNode.getTranslatedX(size, scale) + "\n" +
                             "Vol: " + closestNode.volume + "\n" +
                             "Vel: " + closestNode.velocity + "\n"
             );
         }
     }
 
-    private static RiverNode closestRiverNode(float lowerBound, float upperBound, World world, int x, int z, int size, boolean lake){
+    private static RiverNode closestRiverNode(float lowerBound, float upperBound, World world, int x, int z, int size, float scale, boolean lake){
 
         float dist = Float.MAX_VALUE;
         RiverNode closestNode = null;
+        float dx = PosTranslator.globalToGrid(x, size, scale);
+        float dz = PosTranslator.globalToGrid(z, size, scale);
         for (RiverBasin basin : world.getGrid().getRiverBasins()){
             for (River river : basin.getRivers()) {
                 for (RiverNode node : river.path) {
@@ -140,9 +143,9 @@ public class Locate {
                     float velocity = RiverConstants.convertVelocity(node);
                     if (velocity > upperBound || velocity < lowerBound){continue;}
 
-                    float dx = MathUtil.abs(node.x - PosTranslator.globalToGrid(x, size));
-                    float dz = MathUtil.abs(node.z - PosTranslator.globalToGrid(z, size));
-                    float newDist = Distance.euclidean.apply(dx, dz);
+                    float vx = MathUtil.abs(node.x - dx);
+                    float vz = MathUtil.abs(node.z - dz);
+                    float newDist = Distance.euclidean.apply(vx, vz);
 
                     if (dist > newDist) {
                         dist = newDist;
@@ -203,14 +206,13 @@ public class Locate {
         WorldGrid grid = chunkGenerator.getWorld().getGrid();
 
         int size = grid.getSize();
-        int playerX = source.getPlayer().getBlockX(), playerZ = source.getPlayer().getBlockZ();
         float dist = Float.MAX_VALUE;
         LandFormCell idx = grid.getLandforms().get(0);
 
         for (LandFormCell cell : grid.getLandforms()){
             if (cell.hasCavern()){
-                int dx = PosTranslator.gridToGlobal(cell.getX(), size) - playerX;
-                int dz = PosTranslator.gridToGlobal(cell.getZ(), size) - playerZ;
+                int dx = PosTranslator.gridToGlobal(cell.getX(), size, grid.getConfig().scaleMultiplier()) - blockPos.getX();
+                int dz = PosTranslator.gridToGlobal(cell.getZ(), size, grid.getConfig().scaleMultiplier()) - blockPos.getZ();
                 float newDist = Distance.euclidean.apply(dx, dz);
                 if (dist > newDist){
                     dist = newDist;
@@ -218,7 +220,7 @@ public class Locate {
                 }
             }
         }
-        BlockPos targetPos = new BlockPos(PosTranslator.gridToGlobal(idx.getX(), size),0,PosTranslator.gridToGlobal(idx.getZ(), size));
+        BlockPos targetPos = new BlockPos(PosTranslator.gridToGlobal(idx.getX(), size, grid.getConfig().scaleMultiplier()),0,PosTranslator.gridToGlobal(idx.getZ(), size, grid.getConfig().scaleMultiplier()));
 
 
         if (chunkGenerator == null || (targetPos.getX() + targetPos.getZ()) == 0) {
@@ -235,14 +237,13 @@ public class Locate {
         WorldGrid grid = chunkGenerator.getWorld().getGrid();
 
         int size = grid.getSize();
-        int playerX = source.getPlayer().getBlockX(), playerZ = source.getPlayer().getBlockZ();
         float dist = Float.MAX_VALUE;
         LandFormCell idx = grid.getLandforms().get(0);
 
         for (LandFormCell cell : grid.getLandforms()){
             if (cell.hasCavern()){
-                int dx = PosTranslator.gridToGlobal(cell.getX(), size) - playerX;
-                int dz = PosTranslator.gridToGlobal(cell.getZ(), size) - playerZ;
+                int dx = PosTranslator.gridToGlobal(cell.getX(), size, grid.getConfig().scaleMultiplier()) - blockPos.getX();
+                int dz = PosTranslator.gridToGlobal(cell.getZ(), size, grid.getConfig().scaleMultiplier()) - blockPos.getZ();
                 float newDist = Distance.euclidean.apply(dx, dz);
                 if (dist > newDist){
                     dist = newDist;
@@ -250,7 +251,7 @@ public class Locate {
                 }
             }
         }
-        BlockPos targetPos = new BlockPos(PosTranslator.gridToGlobal(idx.getX(), size),0,PosTranslator.gridToGlobal(idx.getZ(), size));
+        BlockPos targetPos = new BlockPos(PosTranslator.gridToGlobal(idx.getX(), size, grid.getConfig().scaleMultiplier()),0,PosTranslator.gridToGlobal(idx.getZ(), size, grid.getConfig().scaleMultiplier()));
 
         CaveNode closestNode = null;
         dist = Float.MAX_VALUE;
@@ -258,8 +259,8 @@ public class Locate {
         for (CaveLayer layer : idx.getCavern().getLayers()){
             for (CaveNode newNode : layer.nodes()){
 
-                float vecX = newNode.getX() - playerX;
-                float vecZ = newNode.getZ() - playerZ;
+                float vecX = newNode.getX() - blockPos.getX();
+                float vecZ = newNode.getZ() - blockPos.getZ();
                 float newDist = Distance.euclidean.apply(vecX, vecZ);
                 if (dist > newDist){
                     dist = newDist;
@@ -290,7 +291,6 @@ public class Locate {
         WorldGrid grid = chunkGenerator.getWorld().getGrid();
 
         int size = grid.getSize();
-        int playerX = source.getPlayer().getBlockX(), playerZ = source.getPlayer().getBlockZ();
         float dist = Float.MAX_VALUE;
         LandFormCell idx = grid.getLandforms().get(0);
 
@@ -298,8 +298,8 @@ public class Locate {
 
 
             if (landform == WorldRegistries.LANDFORMS.get(cell.getConfig())){
-                int dx = PosTranslator.gridToGlobal(cell.getX(), size) - playerX;
-                int dz = PosTranslator.gridToGlobal(cell.getZ(), size) - playerZ;
+                int dx = PosTranslator.gridToGlobal(cell.getX(), size, grid.getConfig().scaleMultiplier()) - blockPos.getX();
+                int dz = PosTranslator.gridToGlobal(cell.getZ(), size, grid.getConfig().scaleMultiplier()) - blockPos.getZ();
                 float newDist = Distance.euclidean.apply(dx, dz);
                 if (dist > newDist){
                     dist = newDist;
@@ -307,7 +307,7 @@ public class Locate {
                 }
             }
         }
-        BlockPos targetPos = new BlockPos(PosTranslator.gridToGlobal(idx.getX(), size),0,PosTranslator.gridToGlobal(idx.getZ(), size));
+        BlockPos targetPos = new BlockPos(PosTranslator.gridToGlobal(idx.getX(), size, grid.getConfig().scaleMultiplier()),0,PosTranslator.gridToGlobal(idx.getZ(), size, grid.getConfig().scaleMultiplier()));
 
 
         if (chunkGenerator == null || (targetPos.getX() + targetPos.getZ()) == 0) {
@@ -334,8 +334,8 @@ public class Locate {
 
         for (EcoSystemCell cell : grid.getEcosystems()){
             if (ecosystem == WorldRegistries.ECOSYSTEMS.get(cell.getConfig())){
-                int dx = PosTranslator.gridToGlobal(cell.getX(), size) - playerX;
-                int dz = PosTranslator.gridToGlobal(cell.getZ(), size) - playerZ;
+                int dx = PosTranslator.gridToGlobal(cell.getX(), size, grid.getConfig().scaleMultiplier()) - playerX;
+                int dz = PosTranslator.gridToGlobal(cell.getZ(), size, grid.getConfig().scaleMultiplier()) - playerZ;
                 float newDist = Distance.euclidean.apply(dx, dz);
                 if (dist > newDist){
                     dist = newDist;
@@ -343,7 +343,7 @@ public class Locate {
                 }
             }
         }
-        BlockPos targetPos = new BlockPos(PosTranslator.gridToGlobal(idx.getX(), size),0,PosTranslator.gridToGlobal(idx.getZ(), size));
+        BlockPos targetPos = new BlockPos(PosTranslator.gridToGlobal(idx.getX(), size, grid.getConfig().scaleMultiplier()),0,PosTranslator.gridToGlobal(idx.getZ(), size, grid.getConfig().scaleMultiplier()));
 
 
         if (chunkGenerator == null || (targetPos.getX() + targetPos.getZ()) == 0) {
@@ -369,8 +369,8 @@ public class Locate {
         EcoSystemCell closestEcosystem = grid.getEcosystems().getFirst();
 
         for (EcoSystemCell cell : grid.getEcosystems()) {
-            int dx = PosTranslator.gridToGlobal(cell.getX(), size) - playerX;
-            int dz = PosTranslator.gridToGlobal(cell.getZ(), size) - playerZ;
+            int dx = PosTranslator.gridToGlobal(cell.getX(), size, grid.getConfig().scaleMultiplier()) - playerX;
+            int dz = PosTranslator.gridToGlobal(cell.getZ(), size, grid.getConfig().scaleMultiplier()) - playerZ;
             float newDist = Distance.euclidean.apply(dx, dz);
             if (dist > newDist) {
                 dist = newDist;
@@ -382,8 +382,8 @@ public class Locate {
         BiomeCell closestBiome = null;
         for (BiomeCell cell : closestEcosystem.getBiomes()){
             if (Objects.equals(cell.getBiome().toString(), searchEntry)) {
-                int dx = PosTranslator.gridToGlobal(cell.getX(), size) - playerX;
-                int dz = PosTranslator.gridToGlobal(cell.getZ(), size) - playerZ;
+                int dx = PosTranslator.gridToGlobal(cell.getX(), size, grid.getConfig().scaleMultiplier()) - playerX;
+                int dz = PosTranslator.gridToGlobal(cell.getZ(), size, grid.getConfig().scaleMultiplier()) - playerZ;
                 float newDist = Distance.euclidean.apply(dx, dz);
                 if (dist > newDist) {
                     dist = newDist;
@@ -395,7 +395,7 @@ public class Locate {
         if (closestBiome == null) {
             throw KEY_NOT_FOUND.create(searchEntry);
         } else {
-            BlockPos targetPos = new BlockPos(PosTranslator.gridToGlobal(closestBiome.getX(), size),0,PosTranslator.gridToGlobal(closestBiome.getZ(), size));
+            BlockPos targetPos = new BlockPos(PosTranslator.gridToGlobal(closestBiome.getX(), size, grid.getConfig().scaleMultiplier()),0,PosTranslator.gridToGlobal(closestBiome.getZ(), size, grid.getConfig().scaleMultiplier()));
             return sendCoordinates(source, blockPos, targetPos, searchEntry);
         }
     }
@@ -408,7 +408,8 @@ public class Locate {
         for (EcoSystemCell ecoSystemCell : grid.getEcosystems()){
             for (BiomeCell biomeCell : ecoSystemCell.getBiomes()){
                 for (StructureSpawn spawn : biomeCell.getStructures()){
-                    World.LOGGER.info(spawn.toString(grid.getSize(), grid.getConfig().scaleMultiplier()));
+                    source.sendFeedback(() -> Text.of(spawn.toString()), false);
+                    World.LOGGER.info(spawn.toString());
                 }
             }
         }

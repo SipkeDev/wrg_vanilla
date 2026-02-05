@@ -13,6 +13,7 @@ public class CoolDesert extends VanillaBiome {
         register(Structures.desert_pyramid);
         register(Structures.mineshaft);
         register(Structures.trail_ruins);
+        register(Structures.buried_treasure);
     }
 
 }
