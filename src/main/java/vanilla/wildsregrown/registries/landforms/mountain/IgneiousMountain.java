@@ -26,15 +26,15 @@ public class IgneiousMountain extends Landform {
 
         seed.reset();
 
-        Noise erosion = NoiseGenerator.perlin(seed.next(), 384)
+        Noise erosion = NoiseGenerator.perlin(seed.next(), 128)
                 .pingpong(3, 2.25f, 0.5f, 0.5f, 2)
                 .multiply(0.12f);
 
-        return NoiseGenerator.cubic(seed.next(), 1200)
+        return NoiseGenerator.cubic(seed.next(), 880)
                 .fbm(5)
                 .subtract(erosion)
-                .multiply(Constant.of(edge).map(MapType.hermite, 0.002f, 0.95f).clamp(0.22f, 1f))
-                .add(NoiseGenerator.perlin(seed.next(), 384).fbm(3).multiply(0.08f));
+                .add(NoiseGenerator.perlin(seed.next(), 256).fbm(3).multiply(0.12f))
+                ;
     }
 
     @Override

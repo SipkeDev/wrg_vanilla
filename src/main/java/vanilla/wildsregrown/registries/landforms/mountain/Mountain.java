@@ -1,5 +1,6 @@
 package vanilla.wildsregrown.registries.landforms.mountain;
 
+import com.mojang.datafixers.types.templates.Const;
 import com.sipke.Constant;
 import com.sipke.NoiseGenerator;
 import com.sipke.api.categorization.Climate;
@@ -29,10 +30,11 @@ public class Mountain extends Landform {
                 .pingpong(3, 2.25f, 0.5f, 0.5f, 2)
                 .multiply(0.12f);
 
-        return NoiseGenerator.perlin(seed.next(), 768).fbm(5)
-                .scalebias(0.6f, 0.4f)
+        Noise scale = Constant.of(edge).map(MapType.almostUnitIdentity, 0.002f, 0.88f).range(0.6f, 0.95f);
+        return NoiseGenerator.perlin(seed.next(), 1500).fbm(5)
+                .scalebias(scale, Constant.of(0.35f))
                 .subtract(erosion)
-                .multiply(Constant.of(edge).map(MapType.almostUnitIdentity, 0.002f, 0.98f).clamp(0.3f, 1f));
+                .add(NoiseGenerator.cubic(seed.next(), 384).fbm(3).multiply(0.125f));
     }
 
     @Override

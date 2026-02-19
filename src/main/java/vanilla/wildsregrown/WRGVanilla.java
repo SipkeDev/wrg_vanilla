@@ -9,6 +9,7 @@ import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import vanilla.wildsregrown.commands.Locate;
+import vanilla.wildsregrown.network.Networking;
 import vanilla.wildsregrown.registries.*;
 import vanilla.wildsregrown.world.WRGChunkGenerator;
 import vanilla.wildsregrown.world.biomes.WRGBiomeProvider;
@@ -28,6 +29,8 @@ public class WRGVanilla implements ModInitializer {
 		// However, some things (like resources) may still be uninitialized.
 		// Proceed with mild caution.
 
+		/// Networking
+		Networking.init();
 		/// Spawnables
 		Materials.init();
 		Structures.init();
@@ -40,9 +43,6 @@ public class WRGVanilla implements ModInitializer {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
 			Locate.register(dispatcher);
 		});
-
-
-		LOGGER.info("Hello Fabric world!");
 
 		//Register custom world classes
 		Registry.register(Registries.BIOME_SOURCE, Identifier.of(modid, "wrg_biome"), WRGBiomeProvider.CODEC);

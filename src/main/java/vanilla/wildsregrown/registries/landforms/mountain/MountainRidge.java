@@ -32,12 +32,10 @@ public class MountainRidge extends Landform {
                 .pingpong(3, 2.25f, 0.5f, 0.5f, 2)
                 .multiply(0.08f);
 
-        Noise e = Constant.of(edge).map(MapType.almostUnitIdentity, 0.002f, 0.82f);
         return NoiseGenerator.perlin(seed.next(), 3800)
                 .ridged(5)
                 .lerp(NoiseGenerator.perlin(seed.next(), 1200).fbm(3), 0.32f)
-                .subtract(erosion)
-                .scalebias(Constant.of(0.25f), e.multiply(0.75f));
+                .subtract(erosion);
     }
 
     @Override

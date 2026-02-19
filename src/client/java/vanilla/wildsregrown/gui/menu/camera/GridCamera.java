@@ -1,14 +1,13 @@
 package vanilla.wildsregrown.gui.menu.camera;
 
 import com.sipke.World;
-import com.sipke.api.PosTranslator;
-import com.sipke.api.cell.BiomeCell;
-import com.sipke.api.cell.Cell;
-import com.sipke.api.cell.EcoSystemCell;
-import com.sipke.api.cell.LandFormCell;
 import com.sipke.api.features.Colors;
 import com.sipke.api.features.structures.StructureSpawn;
 import com.sipke.api.grid.WorldGrid;
+import com.sipke.api.grid.mesh.cell.BiomeCell;
+import com.sipke.api.grid.mesh.cell.Cell;
+import com.sipke.api.grid.mesh.cell.EcoSystemCell;
+import com.sipke.api.grid.mesh.cell.LandFormCell;
 import com.sipke.api.rivers.River;
 import com.sipke.api.rivers.RiverBasin;
 import com.sipke.api.terrain.Ecosystem;

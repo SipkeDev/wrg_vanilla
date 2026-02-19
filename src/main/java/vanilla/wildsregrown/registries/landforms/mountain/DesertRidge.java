@@ -32,8 +32,7 @@ public class DesertRidge extends Landform {
 
         return NoiseGenerator.perlin(seed.next(), 1512).fbm(5)
                 .scalebias(0.8f, 0.2f)
-                .subtract(erosion)
-                .multiply(Constant.of(edge).map(MapType.almostUnitIdentity, 0.002f, 0.98f).clamp(0.3f, 1f));
+                .subtract(erosion);
     }
 
     @Override

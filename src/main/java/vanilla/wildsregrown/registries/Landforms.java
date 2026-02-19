@@ -30,7 +30,6 @@ public class Landforms {
     public static final RegistryObject<Landform> grand_canyon = WorldRegistries.LANDFORMS.register(new GrandCanyon());
     public static final RegistryObject<Landform> highlands = WorldRegistries.LANDFORMS.register(new HighLands());
     public static final RegistryObject<Landform> hills = WorldRegistries.LANDFORMS.register(new Hills());
-    public static final RegistryObject<Landform> ice_sheets = WorldRegistries.LANDFORMS.register(new IceSheets());
     public static final RegistryObject<Landform> mesa = WorldRegistries.LANDFORMS.register(new Mesa());
     public static final RegistryObject<Landform> plateau = WorldRegistries.LANDFORMS.register(new Plateau());
     public static final RegistryObject<Landform> rolling_hills = WorldRegistries.LANDFORMS.register(new RollingHills());

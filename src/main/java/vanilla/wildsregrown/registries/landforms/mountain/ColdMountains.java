@@ -29,10 +29,9 @@ public class ColdMountains extends Landform {
                 .pingpong(3, 2.25f, 0.5f, 0.5f, 2)
                 .multiply(0.12f);
 
-        return NoiseGenerator.perlin(seed.next(), 768).fbm(5)
-                .scalebias(0.6f, 0.4f)
-                .subtract(erosion)
-                .multiply(Constant.of(edge).map(MapType.almostUnitIdentity, 0.002f, 0.98f).clamp(0.3f, 1f));
+        return NoiseGenerator.perlin(seed.next(), 1200).fbm(5)
+                .scalebias(0.3f, 0.7f)
+                .subtract(erosion);
     }
 
     @Override
