@@ -2,7 +2,7 @@
 	"schemaVersion": 1,
 	"id": "wrg_vanilla",
 	"version": "${version}",
-	"name": "wrg_vanilla",
+	"name": "WildsRegrown Vanilla+",
 	"accessWidener" : "wrg_vanilla.accesswidener",
 	"description": "This is an example description! Tell everyone what your mod is about!",
 	"authors": [
@@ -16,17 +16,14 @@
 	"icon": "assets/wrg_vanilla/icon.png",
 	"environment": "*",
 	"entrypoints": {
-		"preLaunch": [
-			"vanilla.wildsregrown.PreWRGVanilla"
-		],
 		"main": [
-			"vanilla.wildsregrown.WRGVanilla"
+          "wildsregrown.vanilla.WRGVanilla"
 		],
 		"client": [
-			"vanilla.wildsregrown.WRGVanillaClient"
+          "wildsregrown.vanilla.WRGVanillaClient"
 		],
 		"fabric-datagen": [
-			"vanilla.wildsregrown.WRGVanillaDataGenerator"
+          "wildsregrown.vanilla.WRGVanillaDataGenerator"
 		]
 	},
 	"mixins": [
@@ -40,6 +37,7 @@
 		"fabricloader": ">=0.18.4",
 		"minecraft": "~1.21.11",
 		"java": ">=21",
-		"fabric-api": "*"
+		"fabric-api": "*",
+		"wrg_api": ">=0.4.1"
 	}
 }

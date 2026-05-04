@@ -3,14 +3,6 @@
   "package": "vanilla.wildsregrown.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "MixinChunkGenerator",
-    "MixinMinecraftServer",
-    "PopulateBiomes",
-    "SectionMixin",
-    "StructureMixin",
-    "StructurePlacement",
-    "Test",
-    "WorldLoading"
   ],
   "injectors": {
     "defaultRequire": 1
