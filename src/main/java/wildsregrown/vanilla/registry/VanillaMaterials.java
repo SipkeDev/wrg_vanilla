@@ -7,6 +7,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import wildsregrown.vanilla.WRGVanilla;
 
+import static wildsregrown.vanilla.WRGVanilla.modid;
 import static wildsregrown.vanilla.WRGVanilla.vanillaId;
 
 /**
@@ -35,7 +36,7 @@ public class VanillaMaterials {
     public static final IndexedContainer<GeoMaterial> podzol = WorldRegistries.MATERIALS.register(vanillaId, stripData(Blocks.PODZOL), 0.12f, 0.5f, 2,c(),c(),c());
 
     //Gravels
-    public static final IndexedContainer<GeoMaterial> gravel = WorldRegistries.MATERIALS.register(vanillaId, stripData(Blocks.GRAVEL), 0.15f, 0.43f, 5, dirt.getIndex(), c(), c());
+    public static final IndexedContainer<GeoMaterial> gravel = WorldRegistries.MATERIALS.register(vanillaId, stripData(Blocks.GRAVEL),0.15f, 0.43f, 5, dirt.getIndex(), c(), c());
 
     //Rocks
     public static final IndexedContainer<GeoMaterial> cobble_stone = WorldRegistries.MATERIALS.register(vanillaId, stripData(Blocks.COBBLESTONE), 0.15f, 0.3f, 2, dirt.getIndex(), gravel.getIndex(), c());

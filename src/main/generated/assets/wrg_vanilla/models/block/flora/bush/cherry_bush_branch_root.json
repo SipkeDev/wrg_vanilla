@@ -1,0 +1,7 @@
+{
+  "parent": "wrg_api:block/flora/bush/bush_branch_center",
+  "textures": {
+    "0": "minecraft:block/cherry_log",
+    "particle": "minecraft:block/cherry_log"
+  }
+}

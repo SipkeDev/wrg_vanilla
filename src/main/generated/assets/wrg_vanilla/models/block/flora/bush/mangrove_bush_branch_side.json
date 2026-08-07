@@ -1,0 +1,7 @@
+{
+  "parent": "wrg_api:block/flora/bush/bush_branch_side",
+  "textures": {
+    "0": "minecraft:block/mangrove_log",
+    "particle": "minecraft:block/mangrove_log"
+  }
+}

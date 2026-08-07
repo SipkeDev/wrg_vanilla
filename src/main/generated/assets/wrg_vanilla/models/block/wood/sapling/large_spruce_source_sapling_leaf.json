@@ -1,0 +1,7 @@
+{
+  "parent": "wrg_api:block/trees/leaves/sparse_pine_0",
+  "textures": {
+    "0": "minecraft:block/spruce_leaves",
+    "particle": "minecraft:block/spruce_leaves"
+  }
+}

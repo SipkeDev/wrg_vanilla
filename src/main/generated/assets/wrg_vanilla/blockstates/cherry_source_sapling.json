@@ -1,0 +1,41 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "wrg_vanilla:block/wood/sapling/cherry_source_sapling_leaf"
+      }
+    },
+    {
+      "apply": {
+        "model": "wrg_vanilla:block/wood/sapling/cherry_source_sapling_0"
+      },
+      "when": {
+        "age": "0"
+      }
+    },
+    {
+      "apply": {
+        "model": "wrg_vanilla:block/wood/sapling/cherry_source_sapling_1"
+      },
+      "when": {
+        "age": "1"
+      }
+    },
+    {
+      "apply": {
+        "model": "wrg_vanilla:block/wood/sapling/cherry_source_sapling_2"
+      },
+      "when": {
+        "age": "2"
+      }
+    },
+    {
+      "apply": {
+        "model": "wrg_vanilla:block/wood/sapling/cherry_source_sapling_3"
+      },
+      "when": {
+        "age": "3"
+      }
+    }
+  ]
+}

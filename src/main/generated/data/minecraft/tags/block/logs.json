@@ -1,0 +1,41 @@
+{
+  "values": [
+    "wrg_vanilla:azalea_bush_branch",
+    "wrg_vanilla:birch_bush_branch",
+    "wrg_vanilla:cherry_bush_branch",
+    "wrg_vanilla:oak_bush_branch",
+    "wrg_vanilla:mangrove_bush_branch",
+    {
+      "id": "#minecraft:mineable/axe",
+      "required": false
+    },
+    {
+      "id": "#minecraft:logs_that_burn",
+      "required": false
+    },
+    "minecraft:oak_source",
+    "minecraft:big_oak_source",
+    "minecraft:pale_oak_source",
+    "minecraft:dark_oak_source",
+    "minecraft:spruce_source",
+    "minecraft:tall_spruce_source",
+    "minecraft:silver_birch_source",
+    "minecraft:tall_birch_source",
+    "minecraft:cherry_source",
+    "minecraft:azalea_source",
+    "minecraft:jungle_source",
+    "minecraft:mangrove_source",
+    {
+      "id": "#minecraft:mineable/axe",
+      "required": false
+    },
+    {
+      "id": "#minecraft:logs_that_burn",
+      "required": false
+    },
+    {
+      "id": "#minecraft:overworld_natural_logs",
+      "required": false
+    }
+  ]
+}

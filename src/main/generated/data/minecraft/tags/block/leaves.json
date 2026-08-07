@@ -1,0 +1,25 @@
+{
+  "values": [
+    {
+      "id": "#minecraft:mineable/hoe",
+      "required": false
+    },
+    {
+      "id": "#minecraft:replaceable_by_mushrooms",
+      "required": false
+    },
+    {
+      "id": "#minecraft:sword_efficient",
+      "required": false
+    },
+    {
+      "id": "#minecraft:parrots_spawnable_on",
+      "required": false
+    },
+    "wrg_vanilla:azalea_bush_leaves",
+    "wrg_vanilla:birch_bush_leaves",
+    "wrg_vanilla:cherry_bush_leaves",
+    "wrg_vanilla:oak_bush_leaves",
+    "wrg_vanilla:mangrove_bush_leaves"
+  ]
+}

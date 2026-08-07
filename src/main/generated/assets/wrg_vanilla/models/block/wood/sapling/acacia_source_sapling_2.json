@@ -1,0 +1,7 @@
+{
+  "parent": "wrg_api:block/trees/tree_sapling_2",
+  "textures": {
+    "0": "minecraft:block/acacia_log",
+    "particle": "minecraft:block/acacia_log"
+  }
+}

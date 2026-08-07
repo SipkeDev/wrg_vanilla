@@ -1,0 +1,7 @@
+{
+  "parent": "wrg_api:block/trees/branch_thin_edge",
+  "textures": {
+    "0": "minecraft:block/mangrove_log",
+    "particle": "minecraft:block/mangrove_log"
+  }
+}

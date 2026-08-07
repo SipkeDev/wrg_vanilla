@@ -1,0 +1,7 @@
+{
+  "parent": "wrg_api:block/trees/leaves/cubic_0",
+  "textures": {
+    "0": "minecraft:block/azalea_leaves",
+    "particle": "minecraft:block/azalea_leaves"
+  }
+}

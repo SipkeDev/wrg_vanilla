@@ -1,0 +1,7 @@
+{
+  "parent": "wrg_api:block/trees/branch_thick_corner",
+  "textures": {
+    "0": "minecraft:block/birch_log",
+    "particle": "minecraft:block/birch_log"
+  }
+}

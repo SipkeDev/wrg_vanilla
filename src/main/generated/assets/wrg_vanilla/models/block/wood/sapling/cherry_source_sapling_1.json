@@ -1,0 +1,7 @@
+{
+  "parent": "wrg_api:block/trees/tree_sapling_1",
+  "textures": {
+    "0": "minecraft:block/cherry_log",
+    "particle": "minecraft:block/cherry_log"
+  }
+}

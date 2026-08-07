@@ -38,6 +38,6 @@
 		"minecraft": "~1.21.11",
 		"java": ">=21",
 		"fabric-api": "*",
-		"wrg_api": ">=0.4.1"
+		"wrg_api": ">=0.4.2"
 	}
 }

@@ -1,0 +1,7 @@
+{
+  "parent": "wrg_api:block/trees/branch_thick_edge",
+  "textures": {
+    "0": "minecraft:block/pale_oak_log",
+    "particle": "minecraft:block/pale_oak_log"
+  }
+}

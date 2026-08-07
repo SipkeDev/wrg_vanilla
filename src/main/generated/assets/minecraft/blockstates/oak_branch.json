@@ -1,0 +1,440 @@
+{
+  "variants": {
+    "age=0,neighbour=down": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thin_straight",
+      "x": 90
+    },
+    "age=0,neighbour=east": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thin_straight",
+      "y": 90
+    },
+    "age=0,neighbour=east_down": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thin_edge",
+      "y": 90
+    },
+    "age=0,neighbour=east_up": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thin_edge",
+      "x": 180,
+      "y": 270
+    },
+    "age=0,neighbour=none": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thin_single"
+    },
+    "age=0,neighbour=north": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thin_straight"
+    },
+    "age=0,neighbour=north_down": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thin_edge"
+    },
+    "age=0,neighbour=north_east": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thin_angled",
+      "y": 90
+    },
+    "age=0,neighbour=north_east_down": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thin_corner",
+      "y": 90
+    },
+    "age=0,neighbour=north_east_up": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thin_corner",
+      "x": 270,
+      "y": 90
+    },
+    "age=0,neighbour=north_up": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thin_edge",
+      "x": 270
+    },
+    "age=0,neighbour=north_west": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thin_angled"
+    },
+    "age=0,neighbour=north_west_down": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thin_corner"
+    },
+    "age=0,neighbour=north_west_up": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thin_corner",
+      "x": 270
+    },
+    "age=0,neighbour=south": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thin_straight",
+      "y": 180
+    },
+    "age=0,neighbour=south_down": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thin_edge",
+      "y": 180
+    },
+    "age=0,neighbour=south_east": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thin_angled",
+      "y": 180
+    },
+    "age=0,neighbour=south_east_down": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thin_corner",
+      "y": 180
+    },
+    "age=0,neighbour=south_east_up": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thin_corner",
+      "x": 270,
+      "y": 180
+    },
+    "age=0,neighbour=south_up": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thin_edge",
+      "x": 270,
+      "y": 180
+    },
+    "age=0,neighbour=south_west": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thin_angled",
+      "y": 270
+    },
+    "age=0,neighbour=south_west_down": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thin_corner",
+      "y": 270
+    },
+    "age=0,neighbour=south_west_up": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thin_corner",
+      "x": 270,
+      "y": 270
+    },
+    "age=0,neighbour=up": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thin_straight",
+      "x": 270
+    },
+    "age=0,neighbour=west": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thin_straight",
+      "y": 270
+    },
+    "age=0,neighbour=west_down": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thin_edge",
+      "y": 270
+    },
+    "age=0,neighbour=west_up": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thin_edge",
+      "x": 180,
+      "y": 90
+    },
+    "age=1,neighbour=down": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thick_straight",
+      "x": 90
+    },
+    "age=1,neighbour=east": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thick_straight",
+      "y": 90
+    },
+    "age=1,neighbour=east_down": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thick_edge",
+      "y": 90
+    },
+    "age=1,neighbour=east_up": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thick_edge",
+      "x": 180,
+      "y": 270
+    },
+    "age=1,neighbour=none": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thick_single"
+    },
+    "age=1,neighbour=north": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thick_straight"
+    },
+    "age=1,neighbour=north_down": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thick_edge"
+    },
+    "age=1,neighbour=north_east": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thick_angled",
+      "y": 90
+    },
+    "age=1,neighbour=north_east_down": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thick_corner",
+      "y": 90
+    },
+    "age=1,neighbour=north_east_up": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thick_corner",
+      "x": 270,
+      "y": 90
+    },
+    "age=1,neighbour=north_up": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thick_edge",
+      "x": 270
+    },
+    "age=1,neighbour=north_west": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thick_angled"
+    },
+    "age=1,neighbour=north_west_down": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thick_corner"
+    },
+    "age=1,neighbour=north_west_up": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thick_corner",
+      "x": 270
+    },
+    "age=1,neighbour=south": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thick_straight",
+      "y": 180
+    },
+    "age=1,neighbour=south_down": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thick_edge",
+      "y": 180
+    },
+    "age=1,neighbour=south_east": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thick_angled",
+      "y": 180
+    },
+    "age=1,neighbour=south_east_down": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thick_corner",
+      "y": 180
+    },
+    "age=1,neighbour=south_east_up": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thick_corner",
+      "x": 270,
+      "y": 180
+    },
+    "age=1,neighbour=south_up": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thick_edge",
+      "x": 270,
+      "y": 180
+    },
+    "age=1,neighbour=south_west": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thick_angled",
+      "y": 270
+    },
+    "age=1,neighbour=south_west_down": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thick_corner",
+      "y": 270
+    },
+    "age=1,neighbour=south_west_up": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thick_corner",
+      "x": 270,
+      "y": 270
+    },
+    "age=1,neighbour=up": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thick_straight",
+      "x": 270
+    },
+    "age=1,neighbour=west": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thick_straight",
+      "y": 270
+    },
+    "age=1,neighbour=west_down": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thick_edge",
+      "y": 270
+    },
+    "age=1,neighbour=west_up": {
+      "model": "wrg_vanilla:block/wood/oak_branch_thick_edge",
+      "x": 180,
+      "y": 90
+    },
+    "age=2,neighbour=down": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broad_straight",
+      "x": 90
+    },
+    "age=2,neighbour=east": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broad_straight",
+      "y": 90
+    },
+    "age=2,neighbour=east_down": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broad_edge",
+      "y": 90
+    },
+    "age=2,neighbour=east_up": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broad_edge",
+      "x": 180,
+      "y": 270
+    },
+    "age=2,neighbour=none": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broad_single"
+    },
+    "age=2,neighbour=north": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broad_straight"
+    },
+    "age=2,neighbour=north_down": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broad_edge"
+    },
+    "age=2,neighbour=north_east": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broad_angled",
+      "y": 90
+    },
+    "age=2,neighbour=north_east_down": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broad_corner",
+      "y": 90
+    },
+    "age=2,neighbour=north_east_up": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broad_corner",
+      "x": 270,
+      "y": 90
+    },
+    "age=2,neighbour=north_up": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broad_edge",
+      "x": 270
+    },
+    "age=2,neighbour=north_west": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broad_angled"
+    },
+    "age=2,neighbour=north_west_down": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broad_corner"
+    },
+    "age=2,neighbour=north_west_up": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broad_corner",
+      "x": 270
+    },
+    "age=2,neighbour=south": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broad_straight",
+      "y": 180
+    },
+    "age=2,neighbour=south_down": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broad_edge",
+      "y": 180
+    },
+    "age=2,neighbour=south_east": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broad_angled",
+      "y": 180
+    },
+    "age=2,neighbour=south_east_down": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broad_corner",
+      "y": 180
+    },
+    "age=2,neighbour=south_east_up": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broad_corner",
+      "x": 270,
+      "y": 180
+    },
+    "age=2,neighbour=south_up": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broad_edge",
+      "x": 270,
+      "y": 180
+    },
+    "age=2,neighbour=south_west": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broad_angled",
+      "y": 270
+    },
+    "age=2,neighbour=south_west_down": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broad_corner",
+      "y": 270
+    },
+    "age=2,neighbour=south_west_up": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broad_corner",
+      "x": 270,
+      "y": 270
+    },
+    "age=2,neighbour=up": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broad_straight",
+      "x": 270
+    },
+    "age=2,neighbour=west": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broad_straight",
+      "y": 270
+    },
+    "age=2,neighbour=west_down": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broad_edge",
+      "y": 270
+    },
+    "age=2,neighbour=west_up": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broad_edge",
+      "x": 180,
+      "y": 90
+    },
+    "age=3,neighbour=down": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broader_straight",
+      "x": 90
+    },
+    "age=3,neighbour=east": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broader_straight",
+      "y": 90
+    },
+    "age=3,neighbour=east_down": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broader_edge",
+      "y": 90
+    },
+    "age=3,neighbour=east_up": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broader_edge",
+      "x": 180,
+      "y": 270
+    },
+    "age=3,neighbour=none": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broader_single"
+    },
+    "age=3,neighbour=north": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broader_straight"
+    },
+    "age=3,neighbour=north_down": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broader_edge"
+    },
+    "age=3,neighbour=north_east": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broader_angled",
+      "y": 90
+    },
+    "age=3,neighbour=north_east_down": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broader_corner",
+      "y": 90
+    },
+    "age=3,neighbour=north_east_up": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broader_corner",
+      "x": 270,
+      "y": 90
+    },
+    "age=3,neighbour=north_up": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broader_edge",
+      "x": 270
+    },
+    "age=3,neighbour=north_west": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broader_angled"
+    },
+    "age=3,neighbour=north_west_down": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broader_corner"
+    },
+    "age=3,neighbour=north_west_up": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broader_corner",
+      "x": 270
+    },
+    "age=3,neighbour=south": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broader_straight",
+      "y": 180
+    },
+    "age=3,neighbour=south_down": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broader_edge",
+      "y": 180
+    },
+    "age=3,neighbour=south_east": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broader_angled",
+      "y": 180
+    },
+    "age=3,neighbour=south_east_down": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broader_corner",
+      "y": 180
+    },
+    "age=3,neighbour=south_east_up": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broader_corner",
+      "x": 270,
+      "y": 180
+    },
+    "age=3,neighbour=south_up": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broader_edge",
+      "x": 270,
+      "y": 180
+    },
+    "age=3,neighbour=south_west": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broader_angled",
+      "y": 270
+    },
+    "age=3,neighbour=south_west_down": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broader_corner",
+      "y": 270
+    },
+    "age=3,neighbour=south_west_up": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broader_corner",
+      "x": 270,
+      "y": 270
+    },
+    "age=3,neighbour=up": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broader_straight",
+      "x": 270
+    },
+    "age=3,neighbour=west": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broader_straight",
+      "y": 270
+    },
+    "age=3,neighbour=west_down": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broader_edge",
+      "y": 270
+    },
+    "age=3,neighbour=west_up": {
+      "model": "wrg_vanilla:block/wood/oak_branch_broader_edge",
+      "x": 180,
+      "y": 90
+    }
+  }
+}

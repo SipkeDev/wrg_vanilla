@@ -1,0 +1,7 @@
+{
+  "parent": "wrg_api:block/trees/branch_thin_angled",
+  "textures": {
+    "0": "minecraft:block/cherry_log",
+    "particle": "minecraft:block/cherry_log"
+  }
+}

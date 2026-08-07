@@ -22,14 +22,18 @@ public class WRGVanilla implements ModInitializer, DedicatedServerModInitializer
 		// However, some things (like resocurces) may still be uninitialized.
 		// Proceed with mild caution.
 
+		VanillaBlocks.init();
+
 		/// Spawnables
 		VanillaMaterials.init();
 		VanillaStructures.init();
 		VanillaFloras.init();
+		VanillaTrees.init();
+		VanillaBushes.init();
 		/// Spawns
 		VanillaLandforms.init();
-		VanillaEcosystems.init();
 		VanillaBiomes.init();
+		VanillaEcosystems.init();
 
 		for (Ecosystem ecosystem : WorldRegistries.ECOSYSTEMS.getEntries().values()){
 			LOGGER.info("Registry: " + ecosystem.getKey());
